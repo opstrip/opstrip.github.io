@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Jeff" />
+
+
+
+<meta name="description" content="分类描述PostgreSQL常用SQL命令，附带相应演示。">
+<meta name="keywords" content="常用命令,PostgreSQL,SQL大全">
+<meta property="og:type" content="article">
+<meta property="og:title" content="PostgreSQL命令行使用手册">
+<meta property="og:url" content="https://opstrip.com/2017/02/22/using-notes-for-postgresql-commandline/index.html">
+<meta property="og:site_name" content="石尧的博客">
+<meta property="og:description" content="分类描述PostgreSQL常用SQL命令，附带相应演示。">
+<meta property="og:image" content="https://opstrip.com/assets/blogImg/pgdg-1.png">
+<meta property="og:image" content="https://opstrip.com/assets/blogImg/pgdg-2.png">
+<meta property="og:updated_time" content="2017-05-04T07:11:23.463Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PostgreSQL命令行使用手册">
+<meta name="twitter:description" content="分类描述PostgreSQL常用SQL命令，附带相应演示。">
+<meta name="twitter:image" content="https://opstrip.com/assets/blogImg/pgdg-1.png">
+
+    <meta name="keywords" content="PostgreSQL SQL 命令行 常用命令 命令大全,石尧的博客,极客,运维,IT网站,linux运维,运维笔记,学习笔记,备忘录">
+
+    <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="石尧的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+    <!-- link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet" -->
+    <link href="/css/animate.min.css" rel="stylesheet">
+
+    
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+    <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>PostgreSQL命令行使用手册 | 石尧的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?001b8e68e94860ea656f27fff61629f8";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/assets/img/avator.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Jeff</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">精通原创，擅长盗版</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/photos">相册</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:&#115;&#104;&#105;&#121;&#97;&#111;&#46;&#122;&#104;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/336847555" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/opstrip" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa Instagram" href="https://www.instagram.com/opstrip/" title="Instagram"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bash/">Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS6/">CentOS6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS7/">CentOS7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DOS攻击防范/">DOS攻击防范</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ECS/">ECS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVM/">KVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LNMP/">LNMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MegaCli/">MegaCli</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAID/">RAID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SEO/">SEO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL大全/">SQL大全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WEB流量均衡/">WEB流量均衡</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WeChat/">WeChat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos6/">centos6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos7/">centos7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/chain策略/">chain策略</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/console/">console</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firewalld/">firewalld</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git用法/">git用法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iptables/">iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keywords/">keywords</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lv/">lv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lvm/">lvm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ossfs/">ossfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pv/">pv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sendmail/">sendmail</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sitemap/">sitemap</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vg/">vg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xfs/">xfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xfs-growfs/">xfs_growfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zabbix/">zabbix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/使用详解/">使用详解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/关键字/">关键字</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分区扩展/">分区扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分类/">分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/博客/">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/参考样例/">参考样例</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/告警配置/">告警配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/备忘录/">备忘录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习笔记/">学习笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/小技巧/">小技巧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏蔽指定IP/">屏蔽指定IP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/常用命令/">常用命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/挂载/">挂载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/搭建配置/">搭建配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/新特性/">新特性</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志分析/">日志分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/旧事/">旧事</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试用例/">测试用例</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/磁盘阵列/">磁盘阵列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/福利/">福利</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/穿越指南/">穿越指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/端口转发/">端口转发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统变更/">系统变更</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络转发/">网络转发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/花生油/">花生油</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟化/">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟机/">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/西红柿/">西红柿</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/辣椒/">辣椒</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/配置模板/">配置模板</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/闲谈/">闲谈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/阿里云/">阿里云</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随笔/">随笔</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://blog.whichmyhouse.com">国庆</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://xxgblog.com">叉叉哥</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">八年Linux运维 近四年来开始关注公有云技术 还是个小学生 最近开始写博客 请多关照 谢谢</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Jeff</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/assets/img/avator.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Jeff</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">精通原创，擅长盗版</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/photos">相册</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:&#115;&#104;&#105;&#121;&#97;&#111;&#46;&#122;&#104;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/336847555" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/opstrip" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa Instagram" target="_blank" href="https://www.instagram.com/opstrip/" title="Instagram"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-using-notes-for-postgresql-commandline" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/02/22/using-notes-for-postgresql-commandline/" class="article-date">
+      <time datetime="2017-02-22T03:44:40.000Z" itemprop="datePublished">2017-02-22</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      PostgreSQL命令行使用手册
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/postgresql/">postgresql</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PostgreSQL/">PostgreSQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SQL大全/">SQL大全</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/常用命令/">常用命令</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+      
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="启动pgsl数据库"><a href="#启动pgsl数据库" class="headerlink" title="启动pgsl数据库"></a>启动<code>pgsl</code>数据库</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pg_ctl -D /xx/pgdata  <span class="keyword">start</span></div></pre></td></tr></table></figure>
+<h3 id="查看pgsl版本"><a href="#查看pgsl版本" class="headerlink" title="查看pgsl版本"></a>查看<code>pgsl</code>版本</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pg_ctl <span class="comment">--version</span></div></pre></td></tr></table></figure>
+<h3 id="命令行登录数据库"><a href="#命令行登录数据库" class="headerlink" title="命令行登录数据库"></a>命令行登录数据库</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">psql -U username -d dbname -h hostip -p port</div></pre></td></tr></table></figure>
+<h3 id="列出所有数据库"><a href="#列出所有数据库" class="headerlink" title="列出所有数据库"></a>列出所有数据库</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">\l</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h3 id="切换数据库"><a href="#切换数据库" class="headerlink" title="切换数据库"></a>切换数据库</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">\c dbname</div></pre></td></tr></table></figure>
+<h3 id="列出当前数据库的所有表"><a href="#列出当前数据库的所有表" class="headerlink" title="列出当前数据库的所有表"></a>列出当前数据库的所有表</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">\d</div></pre></td></tr></table></figure>
+<h3 id="查看指定表的所有字段"><a href="#查看指定表的所有字段" class="headerlink" title="查看指定表的所有字段"></a>查看指定表的所有字段</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">\d  tablename</div></pre></td></tr></table></figure>
+<p><img src="/assets/blogImg/pgdg-1.png" alt="查看指定表的所有字段"></p>
+<h3 id="查看指定表的基本情况"><a href="#查看指定表的基本情况" class="headerlink" title="查看指定表的基本情况"></a>查看指定表的基本情况</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">\d+  tablename</div></pre></td></tr></table></figure>
+<p><img src="/assets/blogImg/pgdg-2.png" alt="查看指定表的基本情况"></p>
+<h3 id="退出操作"><a href="#退出操作" class="headerlink" title="退出操作"></a>退出操作</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">q</div></pre></td></tr></table></figure>
+<h3 id="新建表"><a href="#新建表" class="headerlink" title="新建表"></a>新建表</h3><h4 id="例1（主键）"><a href="#例1（主键）" class="headerlink" title="例1（主键）"></a>例1（主键）</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">create</span> <span class="keyword">table</span> TESTCASE(</div><div class="line"><span class="keyword">id</span> <span class="built_in">INTEGER</span>, </div><div class="line">task_class <span class="built_in">INTEGER</span>,</div><div class="line">age <span class="built_in">TEXT</span>,</div><div class="line">PRIMARY <span class="keyword">KEY</span>(<span class="keyword">id</span>, task_class)</div><div class="line">);</div></pre></td></tr></table></figure>
+<h4 id="例2（自增SERIAL）"><a href="#例2（自增SERIAL）" class="headerlink" title="例2（自增SERIAL）"></a>例2（自增<code>SERIAL</code>）</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">create</span> <span class="keyword">table</span> CREATETASK_CHKID_N( </div><div class="line"><span class="keyword">id</span> <span class="built_in">SERIAL</span> PRIMARY <span class="keyword">KEY</span>, </div><div class="line">chk_id <span class="built_in">TEXT</span>, </div><div class="line">n <span class="built_in">INTEGER</span></div><div class="line">);</div></pre></td></tr></table></figure>
+<p>其中<code>SERIAL</code>代表自增，默认从<code>1</code>开始增加，每次自增<code>1</code>。</p>
+<h3 id="删除表"><a href="#删除表" class="headerlink" title="删除表"></a>删除表</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">drop</span> <span class="keyword">table</span> REL_CROSS_NODE;</div></pre></td></tr></table></figure>
+<h3 id="清空表"><a href="#清空表" class="headerlink" title="清空表"></a>清空表</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">delete</span> <span class="keyword">from</span> [表名]</div></pre></td></tr></table></figure>
+<h3 id="添加字段"><a href="#添加字段" class="headerlink" title="添加字段"></a>添加字段</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">alter</span> <span class="keyword">table</span> [表名] <span class="keyword">add</span> <span class="keyword">column</span> [字段名] [类型];</div></pre></td></tr></table></figure>
+<h3 id="更改字段"><a href="#更改字段" class="headerlink" title="更改字段"></a>更改字段</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">alter</span> <span class="keyword">table</span> [表名] <span class="keyword">rename</span> <span class="keyword">column</span> [旧字段名] <span class="keyword">to</span> [新字段名];</div></pre></td></tr></table></figure>
+<p>例：把表<code>table_ex</code>字段<code>col_1</code>限制非空去掉：<code>ALTER TABLE table_eg ALTER col_1 drop not NULL</code></p>
+<ul>
+<li>更改字段属性，含空格</li>
+</ul>
+<p>如果把字段<code>colname</code>把属性<code>Text</code>转化为<code>int</code>，原来<code>text</code>里面存在空啥的，可以<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> tablename <span class="keyword">ALTER</span> <span class="keyword">COLUMN</span> colname <span class="keyword">TYPE</span> <span class="built_in">int</span> <span class="keyword">USING</span> (<span class="keyword">trim</span>(keyword)::<span class="built_in">integer</span>);</div></pre></td></tr></table></figure></p>
+<h3 id="删除字段"><a href="#删除字段" class="headerlink" title="删除字段"></a>删除字段</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">alter</span> <span class="keyword">table</span> [表名] <span class="keyword">drop</span> <span class="keyword">column</span> [字段名];</div></pre></td></tr></table></figure>
+<h3 id="表中插入一行数据"><a href="#表中插入一行数据" class="headerlink" title="表中插入一行数据"></a>表中插入一行数据</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">insert</span> <span class="keyword">into</span> [表名] (字段<span class="number">1</span>,字段<span class="number">2</span>) <span class="keyword">values</span> (值<span class="number">1</span>,值<span class="number">2</span>);</div></pre></td></tr></table></figure>
+<p>例如：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">insert</span> <span class="keyword">into</span> assist_info (<span class="keyword">id</span>, maat_id, block_type) <span class="keyword">values</span> (<span class="string">'F006'</span>, <span class="string">'F7775'</span>, <span class="number">1</span>)</div></pre></td></tr></table></figure></p>
+<p>注：如果表中字段有大写的字段，则需要对应的加上双引号。例：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">insert</span> <span class="keyword">into</span> <span class="keyword">test</span> (<span class="keyword">no</span>, <span class="string">"Name"</span>) <span class="keyword">values</span> (<span class="string">'123'</span>, <span class="string">'jihite'</span>);</div></pre></td></tr></table></figure></p>
+<p>值用单引号引起来(‘’)，不能用双引号（””）</p>
+<h3 id="表中删除一行数据"><a href="#表中删除一行数据" class="headerlink" title="表中删除一行数据"></a>表中删除一行数据</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">delete</span> <span class="keyword">from</span> [表名] <span class="keyword">where</span> [该行特征];</div></pre></td></tr></table></figure>
+<h3 id="修改表中数据"><a href="#修改表中数据" class="headerlink" title="修改表中数据"></a>修改表中数据</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">update</span> [表名] <span class="keyword">set</span> [目标字段名]=[目标值] <span class="keyword">where</span> [该行特征]</div></pre></td></tr></table></figure>
+<h3 id="删除表-1"><a href="#删除表-1" class="headerlink" title="删除表"></a>删除表</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">drop</span> <span class="keyword">table</span> [表名];</div></pre></td></tr></table></figure>
+<h3 id="退出postgreSql"><a href="#退出postgreSql" class="headerlink" title="退出postgreSql"></a>退出<code>postgreSql</code></h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">\q</div></pre></td></tr></table></figure>
+<h3 id="两个查询结果做差except"><a href="#两个查询结果做差except" class="headerlink" title="两个查询结果做差except"></a>两个查询结果做差<code>except</code></h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">(<span class="keyword">select</span> node_id <span class="keyword">from</span> node <span class="keyword">where</span> node_id=<span class="number">1</span> <span class="keyword">or</span> node_id=<span class="number">2</span>) <span class="keyword">except</span> (<span class="keyword">select</span> node_id <span class="keyword">from</span> node <span class="keyword">where</span> node_id=<span class="number">1</span>);</div><div class="line"> node_id</div><div class="line"><span class="comment">---------</span></div><div class="line">       2</div><div class="line">(1 row)</div></pre></td></tr></table></figure>
+<h3 id="复制表"><a href="#复制表" class="headerlink" title="复制表"></a>复制表</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> test_a_copy <span class="keyword">AS</span> <span class="keyword">SELECT</span> * <span class="keyword">FROM</span> test_a;</div></pre></td></tr></table></figure>
+<h3 id="命令导入sql数据文件"><a href="#命令导入sql数据文件" class="headerlink" title="命令导入sql数据文件"></a>命令导入sql数据文件</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">psql -h localhost  -d databaseName  -U username -f  filename</div></pre></td></tr></table></figure>
+<h3 id="查询结果存储到输出文件"><a href="#查询结果存储到输出文件" class="headerlink" title="查询结果存储到输出文件"></a>查询结果存储到输出文件</h3><p>格式：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">\o file_path</div></pre></td></tr></table></figure></p>
+<p>这样就会把查询结果存储到输出文件中。例<br><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">postgres=&gt; \o /home/jihite/data/iu_data;</div><div class="line">postgres=&gt; select test_id from cdb_all_iu_data limit 10;</div><div class="line">postgres=&gt; select test_id from cdb_all_iu_data limit 5;</div></pre></td></tr></table></figure></p>
+<p>结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">test_id</div><div class="line">--------------</div><div class="line">         2143</div><div class="line">         2153</div><div class="line">         2144</div><div class="line">         2156</div><div class="line">         2145</div><div class="line">         2154</div><div class="line">         2146</div><div class="line">         2157</div><div class="line">         2147</div><div class="line">         2155</div><div class="line">(10 rows)</div><div class="line">    </div><div class="line">test_id</div><div class="line">--------------</div><div class="line">         2143</div><div class="line">         2153</div><div class="line">         2144</div><div class="line">         2156</div><div class="line">         2145</div><div class="line">(5 rows)</div></pre></td></tr></table></figure></p>
+<h3 id="数据库的备份-amp-恢复"><a href="#数据库的备份-amp-恢复" class="headerlink" title="数据库的备份&amp;恢复"></a>数据库的备份&amp;恢复</h3><p>导出到线下文件<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pg_dump <span class="comment">--host hostname --port port --username username -t tablename -d dbname &gt;/home/jihite/table.sql</span></div></pre></td></tr></table></figure></p>
+<p>把线下文件导入到数据库<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">psql -h 10.125.7.68 -p 5432 -d postgres -U postgres -W postgres -f 2.sql</div></pre></td></tr></table></figure></p>
+<h3 id="x-打开扩展显示功能"><a href="#x-打开扩展显示功能" class="headerlink" title="\x 打开扩展显示功能"></a>\x 打开扩展显示功能</h3><figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">postgres=&gt; \x</div><div class="line">Expanded display is on.</div><div class="line">postgres=&gt; select *  from cdb_chk_items where chk_id = 'R000000335';</div><div class="line">-[ RECORD 1 ]+------------------------------------------------------------------------------------------------</div><div class="line">chk_id       | R000000335</div><div class="line">chk_desc     | 道路属性与道路属性相关检查</div><div class="line">chk_info     | &#123;"FIELDS": &#123;"TRAFFIC_SIGN": ["TYPE", "GEOM"], "ROAD_LINK": ["ROAD_CLASS", "FORM_WAY", "GEOM"]&#125;&#125;</div><div class="line">err_desc     | &#123;"ERR2": "roadclass取值错误", "ERR1": "formway取值错误"&#125;</div><div class="line">chk_level    | 1</div><div class="line">is_opened    | 1</div><div class="line">module_name  | TRAFFIC_SIGN</div><div class="line">invalid_flag | 1</div><div class="line">rel_mode     | MAIN_LAYER:TRAFFIC_SIGN</div><div class="line">             :         TRAFFIC_SIGN|A,M|DIRECT</div><div class="line">             :         ROAD_LINK|A,M,D|ATTR_REL</div></pre></td></tr></table></figure>
+<h3 id="从表A中把符合条件的记录拷贝到表B"><a href="#从表A中把符合条件的记录拷贝到表B" class="headerlink" title="从表A中把符合条件的记录拷贝到表B"></a>从表A中把符合条件的记录拷贝到表B</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">insert</span> <span class="keyword">into</span> A <span class="keyword">select</span> * <span class="keyword">from</span> B <span class="keyword">where</span> <span class="keyword">id</span>  <span class="keyword">in</span> (<span class="string">'a'</span>, <span class="string">'b'</span>, <span class="string">'c'</span>);</div></pre></td></tr></table></figure>
+<p><hr><br>转载自<code>jihite</code>博客：<a href="http://www.cnblogs.com/kaituorensheng/p/4667160.html" target="_blank" rel="external">http://www.cnblogs.com/kaituorensheng/p/4667160.html</a></p>
+
+      
+      
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我喝可乐<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/donate_alipay.jpg" width="130px" height="130px" title="支付宝打赏" alt="支付宝打赏">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/donate_wechat.jpg" width="130px" height="130px" title="微信打赏" alt="微信打赏">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    
+    </div>
+    
+
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/02/22/using-notes-for-postgresql-commandline/">PostgreSQL命令行使用手册</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Jeff</a></p>
+        <p><span>发布时间:</span>2017-02-22, 11:44:40</p>
+        <p><span>最后更新:</span>2017-05-04, 15:11:23</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/02/22/using-notes-for-postgresql-commandline/" title="PostgreSQL命令行使用手册">https://opstrip.com/2017/02/22/using-notes-for-postgresql-commandline/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://opstrip.com/2017/02/22/using-notes-for-postgresql-commandline/　　作者: Jeff" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/02/21/root-partition-expansion-for-centos7/">
+                    CentOS7下根分区扩容
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/03/12/hexo-sitemap-keywords/">
+                    hexo配置sitemap以及设置keywords
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#启动pgsl数据库"><span class="toc-number">1.</span> <span class="toc-text">启动pgsl数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看pgsl版本"><span class="toc-number">2.</span> <span class="toc-text">查看pgsl版本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#命令行登录数据库"><span class="toc-number">3.</span> <span class="toc-text">命令行登录数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#列出所有数据库"><span class="toc-number">4.</span> <span class="toc-text">列出所有数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#切换数据库"><span class="toc-number">5.</span> <span class="toc-text">切换数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#列出当前数据库的所有表"><span class="toc-number">6.</span> <span class="toc-text">列出当前数据库的所有表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看指定表的所有字段"><span class="toc-number">7.</span> <span class="toc-text">查看指定表的所有字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查看指定表的基本情况"><span class="toc-number">8.</span> <span class="toc-text">查看指定表的基本情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#退出操作"><span class="toc-number">9.</span> <span class="toc-text">退出操作</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#新建表"><span class="toc-number">10.</span> <span class="toc-text">新建表</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#例1（主键）"><span class="toc-number">10.1.</span> <span class="toc-text">例1（主键）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#例2（自增SERIAL）"><span class="toc-number">10.2.</span> <span class="toc-text">例2（自增SERIAL）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除表"><span class="toc-number">11.</span> <span class="toc-text">删除表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#清空表"><span class="toc-number">12.</span> <span class="toc-text">清空表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#添加字段"><span class="toc-number">13.</span> <span class="toc-text">添加字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更改字段"><span class="toc-number">14.</span> <span class="toc-text">更改字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除字段"><span class="toc-number">15.</span> <span class="toc-text">删除字段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#表中插入一行数据"><span class="toc-number">16.</span> <span class="toc-text">表中插入一行数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#表中删除一行数据"><span class="toc-number">17.</span> <span class="toc-text">表中删除一行数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#修改表中数据"><span class="toc-number">18.</span> <span class="toc-text">修改表中数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#删除表-1"><span class="toc-number">19.</span> <span class="toc-text">删除表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#退出postgreSql"><span class="toc-number">20.</span> <span class="toc-text">退出postgreSql</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#两个查询结果做差except"><span class="toc-number">21.</span> <span class="toc-text">两个查询结果做差except</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#复制表"><span class="toc-number">22.</span> <span class="toc-text">复制表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#命令导入sql数据文件"><span class="toc-number">23.</span> <span class="toc-text">命令导入sql数据文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#查询结果存储到输出文件"><span class="toc-number">24.</span> <span class="toc-text">查询结果存储到输出文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库的备份-amp-恢复"><span class="toc-number">25.</span> <span class="toc-text">数据库的备份&恢复</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#x-打开扩展显示功能"><span class="toc-number">26.</span> <span class="toc-text">\x 打开扩展显示功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#从表A中把符合条件的记录拷贝到表B"><span class="toc-number">27.</span> <span class="toc-text">从表A中把符合条件的记录拷贝到表B</span></a></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    <div id="share"><div class="bdsharebuttonbox"><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a><a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a><a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a><a href="#" class="bds_mail" data-cmd="mail" title="分享到邮件分享"></a><a href="#" class="bds_more" data-cmd="more"></a></div></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{},"image":{"viewList":["sqq","tsina","weixin","linkedin","douban","copy","mail","mshare"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["sqq","tsina","weixin","linkedin","douban","copy","mail","mshare"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'https://opstrip.com/2017/02/22/using-notes-for-postgresql-commandline/';
+            this.page.identifier = '2017/02/22/using-notes-for-postgresql-commandline/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//opstrip.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/02/21/root-partition-expansion-for-centos7/" title="上一篇: CentOS7下根分区扩容">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/03/12/hexo-sitemap-keywords/" title="下一篇: hexo配置sitemap以及设置keywords">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/Linux-Shell-Bash-Tips/">Linux Bash使用小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/02/Zabbix-Warning-for-qiyeWeChat/">Zabbix：企业微信告警配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/some-nginx-configuration-tips/">一些nginx配置小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/04/Common-Commands-for-Nginx-Log-Statistics/">Nginx日志统计分析常用命令</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/14/howto-monitor-raidCard-status-with-commandline-MegaCli/">MegaCli:如何使用命令行监控RAID卡状态</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/31/Deploying-php71-and-opening-MySQL-extension-on-CentOS7/">在CentOS7中部署php7.1及开启MySQL扩展</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/26/Mounting-ossfs-on-ECS/">阿里云：在ECS上挂载ossfs</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/19/nine-kinds-of-usage-for-iptables/">9个常用iptables配置实例</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/LNMP-on-CentOS7-02/">在CentOS7上配置LNMP环境：PHP篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/05/LNMP-on-CentOS7-01/">在CentOS7上配置LNMP环境：Nginx篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/12/hexo-sitemap-keywords/">hexo配置sitemap以及设置keywords</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/22/using-notes-for-postgresql-commandline/">PostgreSQL命令行使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/21/root-partition-expansion-for-centos7/">CentOS7下根分区扩容</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/20/the-notes-for-learning-firewalld/">Firewalld学习手记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/17/Using-Notes-For-KVM-02/">KVM学习手记：02 存储池、虚拟机及快照</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/16/Using-Notes-For-KVM-01/">KVM学习手记：01 安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/13/Iptables-Configuration-Examples/">iptables配置详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/12/common-usage-summary-for-git/">git常用用法小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/10/nginx-configuration-template/">nginx配置文件nginx.conf配置模版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/09/open-console-on-centos6-centos7/">CentOS 配置 console登录</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/05/the-new-features-of-centos7/">CentOS7版本的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/02/sendmail-with-python2/">使用Python发送邮件分享</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/30/Dynasty-PreQin-Crossing-Guide/">先秦穿越指南</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/11/a-broken-bicycle/">一辆旧自行车</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/create-pages/">创建页面</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+		<div class="footer-center">
+            <a href="/about" target="_self">关于站长</a> | <a href="/resume" target="_self">个人简历</a> | <a href="/sitemap.xml" target="_blank">网站地图</a> | <a href="/atom.xml" target="_blank">订阅本站</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1261281767&web_id=1261281767" language="JavaScript"></script>
+        </div>
+        <hr />
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                版权所有 &copy; 2016-2017 <a href="https://opstrip.com" target="_blank">Jeff</a> 保留所有权利 <a href="http://www.miitbeian.gov.cn/" target="_blank"> 沪ICP备17008273号-1 </a>
+            </div>
+            <div class="footer-right">
+                网站框架<a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>，主题<a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a>，设计师<a href="http://moxfive.xyz/" target="_blank">MOxFIVE</a> <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-90448941-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

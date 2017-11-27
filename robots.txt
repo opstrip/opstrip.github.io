@@ -1,0 +1,7 @@
+User-agent: Baiduspider
+Sitemap: baidusitemap.xml
+Disallow:
+
+User-Agent: *
+Sitemap: sitemap.xml
+Disallow: 

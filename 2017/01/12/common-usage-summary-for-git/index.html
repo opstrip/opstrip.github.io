@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Jeff" />
+
+
+
+<meta name="description" content="git使用详解：全局/本地配置、版本库管理、分支管理、远程库管理等。">
+<meta name="keywords" content="git用法,版本控制,使用详解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git常用用法小结">
+<meta property="og:url" content="https://opstrip.com/2017/01/12/common-usage-summary-for-git/index.html">
+<meta property="og:site_name" content="石尧的博客">
+<meta property="og:description" content="git使用详解：全局/本地配置、版本库管理、分支管理、远程库管理等。">
+<meta property="og:updated_time" content="2017-04-24T05:46:24.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git常用用法小结">
+<meta name="twitter:description" content="git使用详解：全局/本地配置、版本库管理、分支管理、远程库管理等。">
+
+    <meta name="keywords" content="git 全局用户 本地用户 版本库管理 分支管理 远程库管理,石尧的博客,极客,运维,IT网站,linux运维,运维笔记,学习笔记,备忘录">
+
+    <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="石尧的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+    <!-- link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet" -->
+    <link href="/css/animate.min.css" rel="stylesheet">
+
+    
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+    <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>git常用用法小结 | 石尧的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?001b8e68e94860ea656f27fff61629f8";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/assets/img/avator.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Jeff</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">精通原创，擅长盗版</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/photos">相册</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:&#115;&#104;&#105;&#121;&#97;&#111;&#46;&#122;&#104;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/336847555" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/opstrip" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa Instagram" href="https://www.instagram.com/opstrip/" title="Instagram"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bash/">Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS6/">CentOS6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS7/">CentOS7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DOS攻击防范/">DOS攻击防范</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ECS/">ECS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVM/">KVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LNMP/">LNMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MegaCli/">MegaCli</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAID/">RAID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SEO/">SEO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL大全/">SQL大全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WEB流量均衡/">WEB流量均衡</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WeChat/">WeChat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos6/">centos6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos7/">centos7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/chain策略/">chain策略</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/console/">console</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firewalld/">firewalld</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git用法/">git用法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iptables/">iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keywords/">keywords</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lv/">lv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lvm/">lvm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ossfs/">ossfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pv/">pv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sendmail/">sendmail</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sitemap/">sitemap</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vg/">vg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xfs/">xfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xfs-growfs/">xfs_growfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zabbix/">zabbix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/使用详解/">使用详解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/关键字/">关键字</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分区扩展/">分区扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分类/">分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/博客/">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/参考样例/">参考样例</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/告警配置/">告警配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/备忘录/">备忘录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习笔记/">学习笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/小技巧/">小技巧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏蔽指定IP/">屏蔽指定IP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/常用命令/">常用命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/挂载/">挂载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/搭建配置/">搭建配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/新特性/">新特性</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志分析/">日志分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/旧事/">旧事</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试用例/">测试用例</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/磁盘阵列/">磁盘阵列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/福利/">福利</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/穿越指南/">穿越指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/端口转发/">端口转发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统变更/">系统变更</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络转发/">网络转发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/花生油/">花生油</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟化/">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟机/">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/西红柿/">西红柿</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/辣椒/">辣椒</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/配置模板/">配置模板</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/闲谈/">闲谈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/阿里云/">阿里云</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随笔/">随笔</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://blog.whichmyhouse.com">国庆</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://xxgblog.com">叉叉哥</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">八年Linux运维 近四年来开始关注公有云技术 还是个小学生 最近开始写博客 请多关照 谢谢</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Jeff</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/assets/img/avator.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Jeff</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">精通原创，擅长盗版</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/photos">相册</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:&#115;&#104;&#105;&#121;&#97;&#111;&#46;&#122;&#104;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/336847555" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/opstrip" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa Instagram" target="_blank" href="https://www.instagram.com/opstrip/" title="Instagram"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-common-usage-summary-for-git" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/01/12/common-usage-summary-for-git/" class="article-date">
+      <time datetime="2017-01-12T05:41:10.000Z" itemprop="datePublished">2017-01-12</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      git常用用法小结
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/学习笔记/">学习笔记</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git用法/">git用法</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/使用详解/">使用详解</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/版本控制/">版本控制</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+      
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><h4 id="配置全局用户："><a href="#配置全局用户：" class="headerlink" title="配置全局用户："></a>配置全局用户：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ git config --global user.name <span class="string">"Your Name"</span></div><div class="line">$ git config --global user.email <span class="string">"email@example.com"</span></div><div class="line">$ git config --global color.ui <span class="literal">true</span>   <span class="comment"># 开启彩色高亮</span></div><div class="line">$ git config --global core.editor vim <span class="comment"># 设置编辑器为vim</span></div><div class="line">$ git config <span class="_">-l</span>                       <span class="comment"># 列举所有配置</span></div></pre></td></tr></table></figure>
+<figure class="highlight plain"><figcaption><span>git 配置文件路径 ~/.gitconfig</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">项目的 git 配置文件路径 project/.git/config</div><div class="line">项目配置会覆盖全局配置</div></pre></td></tr></table></figure>
+<h4 id="配置本地（当前repository）用户："><a href="#配置本地（当前repository）用户：" class="headerlink" title="配置本地（当前repository）用户："></a>配置本地（当前repository）用户：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git config --local user.name <span class="string">"Your Name"</span></div><div class="line">$ git config --local user.email <span class="string">"email@example.com"</span></div></pre></td></tr></table></figure>
+<h4 id="删除全局用户配置："><a href="#删除全局用户配置：" class="headerlink" title="删除全局用户配置："></a>删除全局用户配置：</h4><a id="more"></a>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git config --global --unset user.name</div><div class="line">$ git config --global --unset user.email</div></pre></td></tr></table></figure>
+<h4 id="删除本地用户配置："><a href="#删除本地用户配置：" class="headerlink" title="删除本地用户配置："></a>删除本地用户配置：</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git config --local --unset user.name</div><div class="line">$ git config --local --unset user.email</div></pre></td></tr></table></figure>
+<h3 id="创建版本库"><a href="#创建版本库" class="headerlink" title="创建版本库"></a>创建版本库</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ mkdir learngit <span class="comment">#新建文件夹</span></div><div class="line">$ <span class="built_in">cd</span> learngit    <span class="comment">#进入文件夹</span></div><div class="line">$ <span class="built_in">pwd</span>  <span class="comment">#显示路径</span></div><div class="line">/Users/admin/learngit</div></pre></td></tr></table></figure>
+<h3 id="初始化版本库与提交"><a href="#初始化版本库与提交" class="headerlink" title="初始化版本库与提交"></a>初始化版本库与提交</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">$ git init    <span class="comment">#初始化空版本库</span></div><div class="line">Initialized empty Git repository <span class="keyword">in</span> /Users/admin/learngit/.git/</div><div class="line">$ git add &lt;file&gt;          <span class="comment"># 将工作文件修改提交到本地暂存区</span></div><div class="line">$ git add .               <span class="comment"># 将所有修改过的工作文件提交暂存区</span></div><div class="line">$ git commit -m <span class="string">"wrote a readme file"</span>  <span class="comment">#将暂存区文件提交到当前分支</span></div><div class="line">[master (root-commit) cb926e7] wrote a readme file</div><div class="line"> 1 file changed, 2 insertions(+)</div><div class="line"> create mode 100644 readme.txt</div></pre></td></tr></table></figure>
+<h3 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h3><p>查看、添加、提交、删除、找回，重置修改文件</p>
+<h4 id="查看文件"><a href="#查看文件" class="headerlink" title="查看文件"></a>查看文件</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">$ git show                <span class="comment"># 显示某次提交的内容</span></div><div class="line">$ git show <span class="variable">$id</span>            <span class="comment"># 显示指定id的内容</span></div><div class="line">    </div><div class="line">$ git diff &lt;file&gt;                  <span class="comment"># 比较当前文件和暂存区文件差异</span></div><div class="line">$ git diff</div><div class="line">$ git diff &lt;<span class="variable">$id1</span>&gt; &lt;<span class="variable">$id2</span>&gt;           <span class="comment"># 比较两次提交之间的差异</span></div><div class="line">$ git diff &lt;branch1&gt;..&lt;branch2&gt;    <span class="comment"># 在两个分支之间比较</span></div><div class="line">$ git diff --staged                <span class="comment"># 比较暂存区和版本库差异</span></div><div class="line">$ git diff --cached                <span class="comment"># 比较暂存区和版本库差异</span></div><div class="line">$ git diff --stat                  <span class="comment"># 仅仅比较统计信息</span></div></pre></td></tr></table></figure>
+<h4 id="查看提交记录"><a href="#查看提交记录" class="headerlink" title="查看提交记录"></a>查看提交记录</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">$ git <span class="built_in">log</span></div><div class="line">$ git <span class="built_in">log</span> &lt;file&gt;          <span class="comment"># 查看该文件每次提交记录</span></div><div class="line">$ git <span class="built_in">log</span> -p &lt;file&gt;       <span class="comment"># 查看每次详细修改内容的 diff</span></div><div class="line">$ git <span class="built_in">log</span> -p -2           <span class="comment"># 查看最近两次详细修改内容的 diff</span></div><div class="line">$ git 本地分支管理</div></pre></td></tr></table></figure>
+<h4 id="查看、切换、创建和删除分支"><a href="#查看、切换、创建和删除分支" class="headerlink" title="查看、切换、创建和删除分支"></a>查看、切换、创建和删除分支</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">$ git branch              <span class="comment"># 查看分支</span></div><div class="line">$ git branch -r           <span class="comment"># 查看远程分支</span></div><div class="line">$ git branch &lt;new_branch&gt; <span class="comment"># 创建新的分支</span></div><div class="line">$ git branch -v           <span class="comment"># 查看各个分支最后提交信息</span></div><div class="line">$ git branch --merged     <span class="comment"># 查看已经被合并到当前分支的分支</span></div><div class="line">$ git branch --no-merged  <span class="comment"># 查看尚未被合并到当前分支的分支</span></div><div class="line">$ git branch <span class="_">-d</span> &lt;branch&gt;  <span class="comment"># 删除某个分支</span></div><div class="line">$ git branch -D &lt;branch&gt;  <span class="comment"># 强制删除某个分支 (未被合并的分支被删除的时候需要强制)</span></div><div class="line">    </div><div class="line">$ git checkout &lt;branch&gt;   <span class="comment"># 切换到某个分支</span></div><div class="line">$ git checkout -b &lt;new_branch&gt;          <span class="comment"># 创建新的分支，并且切换过去</span></div><div class="line">$ git checkout -b &lt;new_branch&gt; &lt;branch&gt; <span class="comment"># 基于 branch 创建新的new_branch</span></div><div class="line">$ git checkout <span class="variable">$id</span>        <span class="comment"># 把某次历史提交记录 checkout 出来，但无分支信息，切换到其他分支会自动删除</span></div><div class="line">$ git checkout <span class="variable">$id</span> -b &lt;new_branch&gt;      <span class="comment"># 把某次历史提交记录 checkout 出来，创建成一个分支</span></div><div class="line">$ git checkout  -- &lt;file&gt; <span class="comment"># 抛弃工作区修改</span></div><div class="line">$ git checkout  .         <span class="comment"># 抛弃工作区修改</span></div></pre></td></tr></table></figure>
+<h4 id="分支合并和rebase"><a href="#分支合并和rebase" class="headerlink" title="分支合并和rebase"></a>分支合并和rebase</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ git merge &lt;branch&gt;               <span class="comment"># 将 branch 分支合并到当前分支</span></div><div class="line">$ git merge origin/master --no-ff  <span class="comment"># 不要 Fast-Foward 合并，这样可以生成 merge 提交</span></div><div class="line">$ git rebase master &lt;branch&gt;       <span class="comment"># 将 master rebase 到 branch，相当于：git checkout &lt;branch&gt; &amp;&amp; git rebase master &amp;&amp; git checkout master &amp;&amp; git merge &lt;branch&gt;</span></div></pre></td></tr></table></figure>
+<h4 id="git暂存管理"><a href="#git暂存管理" class="headerlink" title="git暂存管理"></a>git暂存管理</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">$ git stash               <span class="comment"># 暂存</span></div><div class="line">$ git stash list          <span class="comment"># 列所有stash</span></div><div class="line">$ git stash apply         <span class="comment"># 恢复暂存的内容</span></div><div class="line">$ git stash drop          <span class="comment"># 删除暂存区</span></div></pre></td></tr></table></figure>
+<h4 id="git远程分支管理"><a href="#git远程分支管理" class="headerlink" title="git远程分支管理"></a>git远程分支管理</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">$ git pull                         <span class="comment"># 抓取远程仓库所有分支更新并合并到本地</span></div><div class="line">$ git pull --no-ff                 <span class="comment"># 抓取远程仓库所有分支更新并合并到本地，不要快进合并</span></div><div class="line">$ git fetch origin                 <span class="comment"># 抓取远程仓库更新</span></div><div class="line">$ git merge origin/master          <span class="comment"># 将远程主分支合并到本地当前分支</span></div><div class="line">$ git checkout --track origin/branch     <span class="comment"># 跟踪某个远程分支创建相应的本地分支</span></div><div class="line">$ git checkout -b &lt;local_branch&gt; origin/&lt;remote_branch&gt;  <span class="comment"># 基于远程分支创建本地分支，功能同上</span></div><div class="line">    </div><div class="line">$ git push                         <span class="comment"># push所有分支</span></div><div class="line">$ git push origin master           <span class="comment"># 将本地主分支推到远程主分支</span></div><div class="line">$ git push -u origin master        <span class="comment"># 将本地主分支推到远程(如无远程主分支则创建，用于初始化远程仓库)</span></div><div class="line">$ git push origin &lt;local_branch&gt;   <span class="comment"># 创建远程分支， origin是远程仓库名</span></div><div class="line">$ git push origin &lt;local_branch&gt;:&lt;remote_branch&gt;  <span class="comment"># 创建远程分支</span></div><div class="line">$ git push origin :&lt;remote_branch&gt; <span class="comment"># 先删除本地分支(git branch -d &lt;branch&gt;)，然后再push删除远程分支</span></div><div class="line">    </div><div class="line">$ git rm &lt;file&gt;                    <span class="comment"># 从版本库中删除文件</span></div><div class="line">$ git rm -rf &lt;file&gt;                <span class="comment"># 强制删除远程仓库中的文件目录</span></div><div class="line">$ git rm &lt;file&gt; --cached           <span class="comment"># 从版本库中删除文件，但不删除文件</span></div><div class="line">    </div><div class="line">$ git reset &lt;file&gt;                 <span class="comment"># 从暂存区恢复到工作文件</span></div><div class="line">$ git reset -- .                   <span class="comment"># 从暂存区恢复到工作文件</span></div><div class="line">$ git reset --hard                 <span class="comment"># 恢复最近一次提交过的状态，即放弃上次提交后的所有本次修改</span></div><div class="line">$ git reset --hard HEAD^           <span class="comment">#回退到上个版本（上一个版本就是HEAD^，上上一个版本就是HEAD^^，当然往上100个版本写100个^比较容易数不过来，所以写成HEAD~100。）</span></div></pre></td></tr></table></figure>
+<h4 id="git远程仓库管理"><a href="#git远程仓库管理" class="headerlink" title="git远程仓库管理"></a>git远程仓库管理</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">$ git remote -v                    <span class="comment"># 查看远程服务器地址和仓库名称</span></div><div class="line">$ git remote show origin           <span class="comment"># 查看远程服务器仓库状态</span></div><div class="line">$ git remote add origin git@github.com:whuhacker/Unblock-Youku-Firefox.git     <span class="comment"># 添加远程仓库地址</span></div><div class="line">$ git remote <span class="built_in">set</span>-url origin git@github.com:whuhacker/Unblock-Youku-Firefox.git <span class="comment"># 设置远程仓库地址(用于修改远程仓库地址)</span></div><div class="line">$ git remote rm &lt;repository&gt;       <span class="comment"># 删除远程仓库</span></div><div class="line">    </div><div class="line">$ git commit &lt;file&gt;</div><div class="line">$ git commit .</div><div class="line">$ git commit <span class="_">-a</span>           <span class="comment"># 将 git add, git rm 和 git ci 等操作都合并在一起做</span></div><div class="line">$ git commit -am <span class="string">"some comments"</span></div><div class="line">$ git commit --amend      <span class="comment"># 修改最后一次提交记录</span></div><div class="line">    </div><div class="line">$ git revert &lt;<span class="variable">$id</span>&gt;        <span class="comment"># 恢复某次提交的状态，恢复动作本身也创建了一次提交对象</span></div><div class="line">$ git revert HEAD         <span class="comment"># 恢复最后一次提交的状态</span></div><div class="line">    </div><div class="line">$ git status              <span class="comment"># 查看还问提交但是已经被修改的文件</span></div><div class="line">    </div><div class="line">$ git <span class="built_in">log</span>                 <span class="comment"># 查看历史版本提交记录</span></div><div class="line">$ git <span class="built_in">log</span> --pretty=oneline  <span class="comment"># 查看历史版本提交记录（显示在一行）</span></div><div class="line">$ git reflog              <span class="comment"># 用来记录每一次执行的命令</span></div><div class="line">    </div><div class="line">$ git merge dev           <span class="comment"># 合并dev到当前分支</span></div><div class="line">$ git merge --no-ff -m <span class="string">"merge with no-ff"</span> dev                         <span class="comment"># 加上--no-ff参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并远程仓库</span></div><div class="line">$ ssh-keygen -t rsa -C <span class="string">"youremail@example.com"</span>                        <span class="comment"># 获取管理github仓库的密钥私钥</span></div><div class="line">$ git remote add origin git@github.com:opstrip/opstrip.github.io.git  <span class="comment"># 关联远程仓库</span></div><div class="line">$ git remote <span class="built_in">set</span>-url origin git@github.com:opstrip/opstrip.github.io.git  <span class="comment"># 修改远程仓库</span></div><div class="line">$ git push -u origin master    <span class="comment"># 推送到远程仓库的master分支</span></div><div class="line">$ git <span class="built_in">clone</span> git@github.com:opstrip/opstrip.github.io.git  <span class="comment"># 从远程克隆仓库到本地</span></div><div class="line">$ git push origin branch-name  <span class="comment"># 把本地提交推送到远程仓库的&lt;branch-name&gt;分支</span></div><div class="line">$ git pull                <span class="comment"># 获取最新的远程仓库</span></div></pre></td></tr></table></figure>
+<h4 id="设置跟踪远程库和本地库"><a href="#设置跟踪远程库和本地库" class="headerlink" title="设置跟踪远程库和本地库"></a>设置跟踪远程库和本地库</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">$ git branch --set-upstream master origin/master</div><div class="line">$ git branch --set-upstream develop origin/develop</div></pre></td></tr></table></figure>
+<hr>
+<ul>
+<li>如果git pull提示“no tracking information”，则说明本地分支和远程分支的链接关系没有创建，用命令git branch –set-upstream branch-name origin/branch-name。</li>
+</ul>
+
+      
+      
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我喝可乐<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/donate_alipay.jpg" width="130px" height="130px" title="支付宝打赏" alt="支付宝打赏">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/donate_wechat.jpg" width="130px" height="130px" title="微信打赏" alt="微信打赏">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    
+    </div>
+    
+
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/01/12/common-usage-summary-for-git/">git常用用法小结</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Jeff</a></p>
+        <p><span>发布时间:</span>2017-01-12, 13:41:10</p>
+        <p><span>最后更新:</span>2017-04-24, 13:46:24</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/01/12/common-usage-summary-for-git/" title="git常用用法小结">https://opstrip.com/2017/01/12/common-usage-summary-for-git/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://opstrip.com/2017/01/12/common-usage-summary-for-git/　　作者: Jeff" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/01/10/nginx-configuration-template/">
+                    nginx配置文件nginx.conf配置模版
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/01/13/Iptables-Configuration-Examples/">
+                    iptables配置详解
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#配置"><span class="toc-number">1.</span> <span class="toc-text">配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#配置全局用户："><span class="toc-number">1.1.</span> <span class="toc-text">配置全局用户：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#配置本地（当前repository）用户："><span class="toc-number">1.2.</span> <span class="toc-text">配置本地（当前repository）用户：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删除全局用户配置："><span class="toc-number">1.3.</span> <span class="toc-text">删除全局用户配置：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删除本地用户配置："><span class="toc-number">1.4.</span> <span class="toc-text">删除本地用户配置：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建版本库"><span class="toc-number">2.</span> <span class="toc-text">创建版本库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化版本库与提交"><span class="toc-number">3.</span> <span class="toc-text">初始化版本库与提交</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常用操作"><span class="toc-number">4.</span> <span class="toc-text">常用操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#查看文件"><span class="toc-number">4.1.</span> <span class="toc-text">查看文件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查看提交记录"><span class="toc-number">4.2.</span> <span class="toc-text">查看提交记录</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查看、切换、创建和删除分支"><span class="toc-number">4.3.</span> <span class="toc-text">查看、切换、创建和删除分支</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#分支合并和rebase"><span class="toc-number">4.4.</span> <span class="toc-text">分支合并和rebase</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#git暂存管理"><span class="toc-number">4.5.</span> <span class="toc-text">git暂存管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#git远程分支管理"><span class="toc-number">4.6.</span> <span class="toc-text">git远程分支管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#git远程仓库管理"><span class="toc-number">4.7.</span> <span class="toc-text">git远程仓库管理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#设置跟踪远程库和本地库"><span class="toc-number">4.8.</span> <span class="toc-text">设置跟踪远程库和本地库</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    <div id="share"><div class="bdsharebuttonbox"><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a><a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a><a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a><a href="#" class="bds_mail" data-cmd="mail" title="分享到邮件分享"></a><a href="#" class="bds_more" data-cmd="more"></a></div></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{},"image":{"viewList":["sqq","tsina","weixin","linkedin","douban","copy","mail","mshare"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["sqq","tsina","weixin","linkedin","douban","copy","mail","mshare"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'https://opstrip.com/2017/01/12/common-usage-summary-for-git/';
+            this.page.identifier = '2017/01/12/common-usage-summary-for-git/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//opstrip.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/01/10/nginx-configuration-template/" title="上一篇: nginx配置文件nginx.conf配置模版">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/01/13/Iptables-Configuration-Examples/" title="下一篇: iptables配置详解">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/Linux-Shell-Bash-Tips/">Linux Bash使用小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/02/Zabbix-Warning-for-qiyeWeChat/">Zabbix：企业微信告警配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/some-nginx-configuration-tips/">一些nginx配置小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/04/Common-Commands-for-Nginx-Log-Statistics/">Nginx日志统计分析常用命令</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/14/howto-monitor-raidCard-status-with-commandline-MegaCli/">MegaCli:如何使用命令行监控RAID卡状态</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/31/Deploying-php71-and-opening-MySQL-extension-on-CentOS7/">在CentOS7中部署php7.1及开启MySQL扩展</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/26/Mounting-ossfs-on-ECS/">阿里云：在ECS上挂载ossfs</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/19/nine-kinds-of-usage-for-iptables/">9个常用iptables配置实例</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/LNMP-on-CentOS7-02/">在CentOS7上配置LNMP环境：PHP篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/05/LNMP-on-CentOS7-01/">在CentOS7上配置LNMP环境：Nginx篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/12/hexo-sitemap-keywords/">hexo配置sitemap以及设置keywords</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/22/using-notes-for-postgresql-commandline/">PostgreSQL命令行使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/21/root-partition-expansion-for-centos7/">CentOS7下根分区扩容</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/20/the-notes-for-learning-firewalld/">Firewalld学习手记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/17/Using-Notes-For-KVM-02/">KVM学习手记：02 存储池、虚拟机及快照</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/16/Using-Notes-For-KVM-01/">KVM学习手记：01 安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/13/Iptables-Configuration-Examples/">iptables配置详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/12/common-usage-summary-for-git/">git常用用法小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/10/nginx-configuration-template/">nginx配置文件nginx.conf配置模版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/09/open-console-on-centos6-centos7/">CentOS 配置 console登录</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/05/the-new-features-of-centos7/">CentOS7版本的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/02/sendmail-with-python2/">使用Python发送邮件分享</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/30/Dynasty-PreQin-Crossing-Guide/">先秦穿越指南</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/11/a-broken-bicycle/">一辆旧自行车</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/create-pages/">创建页面</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+		<div class="footer-center">
+            <a href="/about" target="_self">关于站长</a> | <a href="/resume" target="_self">个人简历</a> | <a href="/sitemap.xml" target="_blank">网站地图</a> | <a href="/atom.xml" target="_blank">订阅本站</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1261281767&web_id=1261281767" language="JavaScript"></script>
+        </div>
+        <hr />
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                版权所有 &copy; 2016-2017 <a href="https://opstrip.com" target="_blank">Jeff</a> 保留所有权利 <a href="http://www.miitbeian.gov.cn/" target="_blank"> 沪ICP备17008273号-1 </a>
+            </div>
+            <div class="footer-right">
+                网站框架<a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>，主题<a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a>，设计师<a href="http://moxfive.xyz/" target="_blank">MOxFIVE</a> <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-90448941-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

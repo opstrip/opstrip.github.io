@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Jeff" />
+
+
+
+<meta name="description" content="介绍使用CentOS7搭建LNMP环境，本文介绍Nginx安装与Letsencrypt免费证书的申请及自动续签。">
+<meta name="keywords" content="CentOS7,LNMP,搭建配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="在CentOS7上配置LNMP环境：Nginx篇">
+<meta property="og:url" content="https://opstrip.com/2017/04/05/LNMP-on-CentOS7-01/index.html">
+<meta property="og:site_name" content="石尧的博客">
+<meta property="og:description" content="介绍使用CentOS7搭建LNMP环境，本文介绍Nginx安装与Letsencrypt免费证书的申请及自动续签。">
+<meta property="og:image" content="https://opstrip.com/assets/blogImg/letsencrypt.png">
+<meta property="og:updated_time" content="2017-07-10T06:26:25.672Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="在CentOS7上配置LNMP环境：Nginx篇">
+<meta name="twitter:description" content="介绍使用CentOS7搭建LNMP环境，本文介绍Nginx安装与Letsencrypt免费证书的申请及自动续签。">
+<meta name="twitter:image" content="https://opstrip.com/assets/blogImg/letsencrypt.png">
+
+    <meta name="keywords" content="AWS,Nginx,letsencrypt,证书配置,自动续签,虚拟主机,石尧的博客,极客,运维,IT网站,linux运维,运维笔记,学习笔记,备忘录">
+
+    <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="石尧的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+    <!-- link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet" -->
+    <link href="/css/animate.min.css" rel="stylesheet">
+
+    
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+    <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>在CentOS7上配置LNMP环境：Nginx篇 | 石尧的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?001b8e68e94860ea656f27fff61629f8";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/assets/img/avator.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Jeff</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">精通原创，擅长盗版</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/photos">相册</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:&#115;&#104;&#105;&#121;&#97;&#111;&#46;&#122;&#104;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/336847555" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/opstrip" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa Instagram" href="https://www.instagram.com/opstrip/" title="Instagram"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bash/">Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS6/">CentOS6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS7/">CentOS7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DOS攻击防范/">DOS攻击防范</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ECS/">ECS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVM/">KVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LNMP/">LNMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MegaCli/">MegaCli</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAID/">RAID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SEO/">SEO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL大全/">SQL大全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WEB流量均衡/">WEB流量均衡</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WeChat/">WeChat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos6/">centos6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos7/">centos7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/chain策略/">chain策略</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/console/">console</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firewalld/">firewalld</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git用法/">git用法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iptables/">iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keywords/">keywords</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lv/">lv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lvm/">lvm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ossfs/">ossfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pv/">pv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sendmail/">sendmail</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sitemap/">sitemap</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vg/">vg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xfs/">xfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xfs-growfs/">xfs_growfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zabbix/">zabbix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/使用详解/">使用详解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/关键字/">关键字</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分区扩展/">分区扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分类/">分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/博客/">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/参考样例/">参考样例</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/告警配置/">告警配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/备忘录/">备忘录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习笔记/">学习笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/小技巧/">小技巧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏蔽指定IP/">屏蔽指定IP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/常用命令/">常用命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/挂载/">挂载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/搭建配置/">搭建配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/新特性/">新特性</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志分析/">日志分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/旧事/">旧事</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试用例/">测试用例</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/磁盘阵列/">磁盘阵列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/福利/">福利</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/穿越指南/">穿越指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/端口转发/">端口转发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统变更/">系统变更</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络转发/">网络转发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/花生油/">花生油</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟化/">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟机/">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/西红柿/">西红柿</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/辣椒/">辣椒</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/配置模板/">配置模板</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/闲谈/">闲谈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/阿里云/">阿里云</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随笔/">随笔</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://blog.whichmyhouse.com">国庆</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://xxgblog.com">叉叉哥</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">八年Linux运维 近四年来开始关注公有云技术 还是个小学生 最近开始写博客 请多关照 谢谢</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Jeff</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/assets/img/avator.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Jeff</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">精通原创，擅长盗版</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/photos">相册</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:&#115;&#104;&#105;&#121;&#97;&#111;&#46;&#122;&#104;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/336847555" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/opstrip" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa Instagram" target="_blank" href="https://www.instagram.com/opstrip/" title="Instagram"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-LNMP-on-CentOS7-01" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/04/05/LNMP-on-CentOS7-01/" class="article-date">
+      <time datetime="2017-04-05T08:15:14.000Z" itemprop="datePublished">2017-04-05</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      在CentOS7上配置LNMP环境：Nginx篇
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/linux/">linux</a><a class="article-category-link" href="/categories/linux/CentOS7/">CentOS7</a><a class="article-category-link" href="/categories/linux/CentOS7/LNMP/">LNMP</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CentOS7/">CentOS7</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LNMP/">LNMP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/搭建配置/">搭建配置</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+      
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>早就听说AWS的大名了，信用卡办下来后第一件事就是申请了个AWS的账号，买了美东的EC2（CentOS7）及RDS（MySQL5.6）资源各一。当然都是免费套餐中的，不管怎样总算是终于有了自己的主机了。<br>老规矩，初始化CentOS7，放上自己的key，配置好安全组打通EC2与RDS之间的网络，测试了下发现通了。</p>
+<p>因为之前使用的GitHub Pages博客一直都是静态的Html，所以这次打算直接丢到EC2上先用nginx跑起来，然后将国外线路解析到这台EC2上，国内线路用 <a href="https://portal.qiniu.com/signup?code=3liil4gl9pkr6" target="_blank" rel="external">七牛的CDN</a> 的，相册中的照片也是存贮在七牛的。<br>一步步来吧，先整个Nginx。</p>
+<h3 id="安装Nginx"><a href="#安装Nginx" class="headerlink" title="安装Nginx"></a>安装Nginx</h3><h4 id="1、安装Nginx依赖及常用软件包"><a href="#1、安装Nginx依赖及常用软件包" class="headerlink" title="1、安装Nginx依赖及常用软件包"></a>1、安装Nginx依赖及常用软件包</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[root@opstrip opt]# yum -y install net-tools git gcc rsync  lrzsz telnet wget ntp dstat mlocate bind-utils nscd psmisc python-devel python-pip mtr chrony gcc gcc-c++ autoconf automake zlib zlib-devel openssl openssl-devel pcre-devel</div></pre></td></tr></table></figure>
+<h4 id="2、安装前的准备"><a href="#2、安装前的准备" class="headerlink" title="2、安装前的准备"></a>2、安装前的准备</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"># 创建Nginx运行用户</div><div class="line">[root@opstrip opt]# groupadd -r www</div><div class="line">[root@opstrip opt]# useradd -s /sbin/nologin -g www -r www</div><div class="line"># 获取Nginx源码并解压</div><div class="line">[root@opstrip opt]# wget http://nginx.org/download/nginx-1.11.12.tar.gz</div><div class="line">[root@opstrip opt]# tar xf nginx-1.11.12.tar.gz</div><div class="line">[root@opstrip opt]# cd nginx-1.11.12</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h4 id="3、编译安装Nginx"><a href="#3、编译安装Nginx" class="headerlink" title="3、编译安装Nginx"></a>3、编译安装Nginx</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"># 编译Nginx</div><div class="line">[root@opstrip nginx-1.11.12]# ./configure \</div><div class="line">--prefix=/etc/nginx \</div><div class="line">--sbin-path=/usr/sbin/nginx \</div><div class="line">--conf-path=/etc/nginx/nginx.conf \</div><div class="line">--error-log-path=/var/log/nginx/error.log \</div><div class="line">--http-log-path=/var/log/nginx/access.log \</div><div class="line">--pid-path=/var/run/nginx.pid \</div><div class="line">--lock-path=/var/run/nginx.lock \</div><div class="line">--http-client-body-temp-path=/var/cache/nginx/client_temp \</div><div class="line">--http-proxy-temp-path=/var/cache/nginx/proxy_temp \</div><div class="line">--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \</div><div class="line">--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \</div><div class="line">--http-scgi-temp-path=/var/cache/nginx/scgi_temp \</div><div class="line">--user=www \</div><div class="line">--group=www \</div><div class="line">--with-http_ssl_module \</div><div class="line">--with-http_realip_module \</div><div class="line">--with-http_addition_module \</div><div class="line">--with-http_sub_module \</div><div class="line">--with-http_dav_module \</div><div class="line">--with-http_flv_module \</div><div class="line">--with-http_mp4_module \</div><div class="line">--with-http_gunzip_module \</div><div class="line">--with-http_gzip_static_module \</div><div class="line">--with-http_random_index_module \</div><div class="line">--with-http_secure_link_module \</div><div class="line">--with-http_stub_status_module \</div><div class="line">--with-http_auth_request_module \</div><div class="line">--with-mail_ssl_module \</div><div class="line">--with-file-aio \</div><div class="line">--with-cc-opt=&apos;-O2 -g -pipe -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector --param=ssp-buffer-size=4 -m64 -mtune=generic&apos;</div><div class="line"># 安装Nginx</div><div class="line">[root@opstrip nginx-1.11.12]# make &amp;&amp; make install</div><div class="line"># 查看Nginx版本以确认Nginx安装成功</div><div class="line">[root@opstrip nginx-1.11.12]# nginx -V</div></pre></td></tr></table></figure>
+<h4 id="4、配置Nginx服务并启动"><a href="#4、配置Nginx服务并启动" class="headerlink" title="4、配置Nginx服务并启动"></a>4、配置Nginx服务并启动</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div></pre></td><td class="code"><pre><div class="line"># 创建Nginx缓存目录并赋予相应权限</div><div class="line">[root@opstrip nginx-1.11.12]# mkdir -p /var/cache/nginx/&#123;client_temp,proxy_temp,fastcgi_temp,uwsgi_temp,scgi_temp&#125;</div><div class="line">[root@opstrip nginx-1.11.12]# chown -R www.www /var/cache/nginx/</div><div class="line"># 将Nginx添加到systemd中</div><div class="line">[root@opstrip nginx-1.11.12]# vi /usr/lib/systemd/system/nginx.service </div><div class="line">[Unit]</div><div class="line">Description=nginx - high performance web server</div><div class="line">Documentation=http://nginx.org/en/docs/</div><div class="line">After=network.target remote-fs.target nss-lookup.target</div><div class="line">  </div><div class="line">[Service]</div><div class="line">Type=forking</div><div class="line">PIDFile=/var/run/nginx.pid</div><div class="line">ExecStartPre=/usr/sbin/nginx -t -c /etc/nginx/nginx.conf</div><div class="line">ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf</div><div class="line">ExecReload=/bin/kill -s HUP $MAINPID</div><div class="line">ExecStop=/bin/kill -s QUIT $MAINPID</div><div class="line">PrivateTmp=true</div><div class="line">  </div><div class="line">[Install]</div><div class="line">WantedBy=multi-user.target</div><div class="line"># 设置nginx开机启动并启动</div><div class="line">[root@opstrip opt]# systemctl enable nginx.service</div><div class="line">[root@opstrip opt]# systemctl start nginx.service</div><div class="line"># 确认nginx进程已启动</div><div class="line">[root@opstrip opt]# ps -ef|grep nginx</div><div class="line">root     12245     1  0 4月05 ?       00:00:00 nginx: master process /usr/sbin/nginx -c /etc/nginx/nginx.conf</div><div class="line">www      19228 12245  0 15:02 ?        00:00:00 nginx: worker process</div><div class="line">root     29996 29890  0 16:58 pts/3    00:00:00 grep --color=auto nginx</div></pre></td></tr></table></figure>
+<p>这时候浏览器访问<code>http://&lt;EC2的公网ip&gt;</code>，如果<code>安全组</code>与<code>firewalld</code>、<code>selinux</code>配置正确的话访问的应该是<code>nginx</code>的默认页。</p>
+<h3 id="配置Nginx虚拟主机"><a href="#配置Nginx虚拟主机" class="headerlink" title="配置Nginx虚拟主机"></a>配置Nginx虚拟主机</h3><h4 id="5、Nginx虚拟主机配置"><a href="#5、Nginx虚拟主机配置" class="headerlink" title="5、Nginx虚拟主机配置"></a>5、Nginx<code>虚拟主机</code>配置</h4><p>是时候放网站了。网站放置前需要把相应的<code>域名解析</code>到这台EC2上，或者就需要<code>绑定本地hosts</code>。这里是将国外线路<code>A记录</code>到这台<code>EC2</code>上，同时添加了个<code>a.opstrip.com</code>域名指向这台<code>EC2</code>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div></pre></td><td class="code"><pre><div class="line">[root@opstrip opt]# git clone https://github.com/opstrip/opstrip.github.io.git      # 克隆GitHub Pages博客中的Html源码</div><div class="line">[root@opstrip opt]# ln -s /opt/opstrip.github.io /usr/share/html</div><div class="line">[root@opstrip opt]# mkdir -p /etc/nginx/conf.d                                      # 将Nginx虚拟机配置文件放入到此目录</div><div class="line">[root@opstrip opt]# vi /etc/nginx/nginx.conf                                        # Nginx主配置文件</div><div class="line">    </div><div class="line">user  www;</div><div class="line">worker_processes  1;</div><div class="line">    </div><div class="line">error_log  /var/log/nginx/error.log;</div><div class="line">error_log  /var/log/nginx/error.log  notice;</div><div class="line">error_log  /var/log/nginx/error.log  info;</div><div class="line">    </div><div class="line">pid        /var/run/nginx.pid;</div><div class="line">    </div><div class="line">events &#123;</div><div class="line">    use epoll;</div><div class="line">    worker_connections 51200;</div><div class="line">    multi_accept on;</div><div class="line">&#125;</div><div class="line">    </div><div class="line">http &#123;</div><div class="line">    include       mime.types;</div><div class="line">    default_type  application/octet-stream;</div><div class="line">    </div><div class="line">    #log format</div><div class="line">    log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</div><div class="line">                      &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</div><div class="line">                      &apos;&quot;$http_user_agent&quot; $http_x_forwarded_for&apos;;</div><div class="line">                      </div><div class="line">    access_log  /var/log/nginx/access.log  main;</div><div class="line">    </div><div class="line">    server_names_hash_bucket_size 128;</div><div class="line">    client_header_buffer_size 32k;</div><div class="line">    large_client_header_buffers 4 32k;</div><div class="line">    client_max_body_size 50m;</div><div class="line">    </div><div class="line">    sendfile on;</div><div class="line">    tcp_nopush     on;</div><div class="line">    keepalive_timeout 60;</div><div class="line">    tcp_nodelay on;</div><div class="line">    </div><div class="line">    # fastcgi_connect_timeout 300;</div><div class="line">    # fastcgi_send_timeout 300;</div><div class="line">    # fastcgi_read_timeout 300;</div><div class="line">    # fastcgi_buffer_size 64k;</div><div class="line">    # fastcgi_buffers 4 64k;</div><div class="line">    # fastcgi_busy_buffers_size 128k;</div><div class="line">    # fastcgi_temp_file_write_size 256k;</div><div class="line">    </div><div class="line">    gzip on;</div><div class="line">    gzip_min_length  1k;</div><div class="line">    gzip_buffers     4 16k;</div><div class="line">    gzip_http_version 1.0;</div><div class="line">    gzip_comp_level 2;</div><div class="line">    gzip_types       text/plain application/x-javascript text/css application/xml;</div><div class="line">    gzip_vary on;</div><div class="line">    gzip_proxied        expired no-cache no-store private auth;</div><div class="line">    gzip_disable        &quot;MSIE [1-6]\.&quot;;</div><div class="line">    </div><div class="line">    #limit_conn_zone $binary_remote_addr zone=perip:10m;</div><div class="line">    ##If enable limit_conn_zone,add &quot;limit_conn perip 10;&quot; to server section.</div><div class="line">    server_tokens off;</div><div class="line">    </div><div class="line">    #server &#123;</div><div class="line">        #listen       80;</div><div class="line">        #server_name  localhost;</div><div class="line">    </div><div class="line">        #charset koi8-r;</div><div class="line">    </div><div class="line">        #access_log  logs/host.access.log  main;</div><div class="line">    </div><div class="line">        #location / &#123;</div><div class="line">            #root   html;</div><div class="line">            #index  index.html index.htm;</div><div class="line">        #&#125;</div><div class="line">    </div><div class="line">        #error_page  404              /404.html;</div><div class="line">    </div><div class="line">        # redirect server error pages to the static page /50x.html</div><div class="line">        #</div><div class="line">        #error_page   500 502 503 504  /50x.html;</div><div class="line">        #location = /50x.html &#123;</div><div class="line">            #root   html;</div><div class="line">        #&#125;</div><div class="line">    </div><div class="line">        # proxy the PHP scripts to Apache listening on 127.0.0.1:80</div><div class="line">        #</div><div class="line">        #location ~ \.php$ &#123;</div><div class="line">        #    proxy_pass   http://127.0.0.1;</div><div class="line">        #&#125;</div><div class="line">    </div><div class="line">        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</div><div class="line">        #</div><div class="line">        #location ~ \.php$ &#123;</div><div class="line">        #    root           html;</div><div class="line">        #    fastcgi_pass   127.0.0.1:9000;</div><div class="line">        #    fastcgi_index  index.php;</div><div class="line">        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;</div><div class="line">        #    include        fastcgi_params;</div><div class="line">        #&#125;</div><div class="line">    </div><div class="line">        # deny access to .htaccess files, if Apache&apos;s document root</div><div class="line">        # concurs with nginx&apos;s one</div><div class="line">        #</div><div class="line">        #location ~ /\.ht &#123;</div><div class="line">        #    deny  all;</div><div class="line">        #&#125;</div><div class="line">    #&#125;</div><div class="line">    </div><div class="line">    </div><div class="line">    # another virtual host using mix of IP-, name-, and port-based configuration</div><div class="line">    #server &#123;</div><div class="line">    #    listen       8000;</div><div class="line">    #    listen       somename:8080;</div><div class="line">    #    server_name  somename  alias  another.alias;</div><div class="line">    </div><div class="line">    #    location / &#123;</div><div class="line">    #        root   html;</div><div class="line">    #        index  index.html index.htm;</div><div class="line">    #    &#125;</div><div class="line">    #&#125;</div><div class="line">    </div><div class="line">    # HTTPS server</div><div class="line">    </div><div class="line">    #server &#123;</div><div class="line">    #    listen       443 ssl;</div><div class="line">    #    server_name  localhost;</div><div class="line">    </div><div class="line">    #    ssl_certificate      cert.pem;</div><div class="line">    #    ssl_certificate_key  cert.key;</div><div class="line">    </div><div class="line">    #    ssl_session_cache    shared:SSL:1m;</div><div class="line">    #    ssl_session_timeout  5m;</div><div class="line">    </div><div class="line">    #    ssl_ciphers  HIGH:!aNULL:!MD5;</div><div class="line">    #    ssl_prefer_server_ciphers  on;</div><div class="line">    </div><div class="line">    #    location / &#123;</div><div class="line">    #        root   html;</div><div class="line">    #        index  index.html index.htm;</div><div class="line">    #    &#125;</div><div class="line">    #&#125;</div><div class="line">    include conf.d/*.conf;</div><div class="line">&#125;</div><div class="line">[root@opstrip opt]# vi /etc/nginx/conf.d/opstrip.conf</div><div class="line">server &#123;</div><div class="line">    listen 80;</div><div class="line">    listen [::]:80 ssl ipv6only=on; </div><div class="line">    server_name  opstrip.com www.opstrip.com a.opstrip.com;</div><div class="line">    </div><div class="line">    #charset koi8-r;</div><div class="line">    </div><div class="line">    #access_log  logs/host.access.log  main;</div><div class="line">    root /usr/share/html;</div><div class="line">    index index.html index.htm README README.txt;</div><div class="line">    location / &#123;</div><div class="line">        root   /usr/share/html;</div><div class="line">        index  index.html index.htm;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    error_page  404              /404.html;</div><div class="line">    </div><div class="line">    # redirect server error pages to the static page /50x.html</div><div class="line">    error_page   500 502 503 504  /50x.html;</div><div class="line">    location = /50x.html &#123;</div><div class="line">        root   html;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">[root@opstrip opt]# systemctl reload nginx</div></pre></td></tr></table></figure></p>
+<p>本地ping下<code>a.opstrip.com</code>，如果DNS已经生效用浏览器打开 <a href="http://a.opstrip.com" target="_blank" rel="external">http://a.opstrip.com</a> 博客就可以展现出来了。</p>
+<h3 id="获取并配置SSL证书"><a href="#获取并配置SSL证书" class="headerlink" title="获取并配置SSL证书"></a>获取并配置SSL证书</h3><h4 id="6、使用Let‘s-encrypt免费证书"><a href="#6、使用Let‘s-encrypt免费证书" class="headerlink" title="6、使用Let‘s encrypt免费证书"></a>6、使用Let‘s encrypt免费证书</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/letsencrypt/letsencrypt</div><div class="line">cd letsencrypt/</div><div class="line">./certbot-auto certonly --webroot --agree-tos -v -t --email shiyao.zh@gmail.com -w /usr/share/html -d opstrip.com,www.opstrip.com,a.opstrip.com</div></pre></td></tr></table></figure>
+<p>以上命令使用<code>certbot</code>的<code>webroot</code>方式获取，<code>-w</code>表示网站路径，<code>-d</code>表示域名，可以多个。遗憾的是还不支持泛域名。<br>由于机器是在墙外，只要DNS解析没问题，很容易就能通过验证。验证成功会返回类似如下信息：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">IMPORTANT NOTES:</div><div class="line"> - Congratulations! Your certificate and chain have been saved at</div><div class="line">   /etc/letsencrypt/live/opstrip.com/fullchain.pem. Your cert will</div><div class="line">   expire on 2017-07-04. To obtain a new or tweaked version of this</div><div class="line">   certificate in the future, simply run certbot-auto again. To</div><div class="line">   non-interactively renew *all* of your certificates, run</div><div class="line">   &quot;certbot-auto renew&quot;</div><div class="line"> - If you like Certbot, please consider supporting our work by:</div><div class="line">           </div><div class="line">   Donating to ISRG / Let&apos;s Encrypt:   https://letsencrypt.org/donate</div><div class="line">   Donating to EFF:                    https://eff.org/donate-le</div></pre></td></tr></table></figure></p>
+<p>每次获取的证书有效期都是90天，不过到期后可以续签的。证书文件在<code>/etc/letsencrypt/live</code>下，<code>fullchain.pem</code>与<code>privkey.pem</code>是<code>nginx</code>的<code>公钥</code>与<code>私钥</code>。所以Nginx SSL配置如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">[root@opstrip opt]# vi /etc/nginx/conf.d/opstrip.conf</div><div class="line">server &#123;</div><div class="line">    listen 80;</div><div class="line">    listen [::]:80 ssl ipv6only=on; </div><div class="line">    server_name  opstrip.com www.opstrip.com a.opstrip.com;</div><div class="line">    </div><div class="line">    #charset koi8-r;</div><div class="line">    </div><div class="line">    #access_log  logs/host.access.log  main;</div><div class="line">    root /usr/share/html;</div><div class="line">    index index.html index.htm README README.txt;</div><div class="line">    location / &#123;</div><div class="line">        root   /usr/share/html;</div><div class="line">        index  index.html index.htm;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line">    error_page  404              /404.html;</div><div class="line">    </div><div class="line">    # redirect server error pages to the static page /50x.html</div><div class="line">    #</div><div class="line">    error_page   500 502 503 504  /50x.html;</div><div class="line">    location = /50x.html &#123;</div><div class="line">        root   html;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">    </div><div class="line"># HTTPS server</div><div class="line">    </div><div class="line">server &#123;</div><div class="line">    listen 443 ssl;</div><div class="line">    listen [::]:443 ssl ipv6only=on;</div><div class="line">    server_name  opstrip.com www.opstrip.com a.opstrip.com;</div><div class="line">    </div><div class="line">    ssl on;</div><div class="line">    #ssl_certificate      /etc/nginx/certs/www.opstrip.com.pem;</div><div class="line">    #ssl_certificate_key  /etc/nginx/certs/www.opstrip.com.key;</div><div class="line">    ssl_certificate      /etc/letsencrypt/live/opstrip.com/fullchain.pem;</div><div class="line">    ssl_certificate_key  /etc/letsencrypt/live/opstrip.com/privkey.pem;</div><div class="line">    </div><div class="line">    ssl_session_cache    shared:SSL:1m;</div><div class="line">    ssl_session_timeout  5m;</div><div class="line">    </div><div class="line">    #ssl_ciphers  HIGH:!aNULL:!MD5;</div><div class="line">    #ssl_prefer_server_ciphers  on;</div><div class="line">    </div><div class="line">    root /usr/share/html;</div><div class="line">    index index.html index.htm README README.txt;</div><div class="line">    location / &#123;</div><div class="line">        root   /usr/share/html;</div><div class="line">        index  index.html index.htm;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line">[root@opstrip opt]# systemctl reload nginx</div></pre></td></tr></table></figure></p>
+<p>现在可以访问 <a href="https://a.opstrip.com" target="_blank" rel="external">https://a.opstrip.com</a> 了，如下图：</p>
+<p><center><img src="/assets/blogImg/letsencrypt.png" alt="Let&#39;s Encrypt"></center><br>可以看到证书的颁发机构为<code>Let&#39;s Encrypt</code>，有效期<code>三个月</code>。<br>因此我们可以写脚本<code>自动续签</code>的，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">[root@opstrip ~]# vi /opt/letsencrypt/renewletsencrypt.sh </div><div class="line">#!/bin/bash</div><div class="line">    </div><div class="line">. /etc/profile</div><div class="line">    </div><div class="line"># /usr/bin/systemctl stop nginx</div><div class="line">cd /opt/letsencrypt</div><div class="line">./letsencrypt-auto renew --email shiyao.zh@gmail.com --agree-tos</div><div class="line">sleep 3</div><div class="line">/usr/bin/systemctl reload nginx</div><div class="line">exit 0</div><div class="line"># 将脚本添加到crontab任务每3月执行一次即可</div><div class="line">[root@opstrip ~]# vi /etc/crontab</div><div class="line">SHELL=/bin/bash</div><div class="line">PATH=/sbin:/bin:/usr/sbin:/usr/bin</div><div class="line">MAILTO=root</div><div class="line">    </div><div class="line"># For details see man 4 crontabs</div><div class="line"></div><div class="line"># Example of job definition:</div><div class="line"># .---------------- minute (0 - 59)</div><div class="line"># |  .------------- hour (0 - 23)</div><div class="line"># |  |  .---------- day of month (1 - 31)</div><div class="line"># |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...</div><div class="line"># |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat</div><div class="line"># |  |  |  |  |</div><div class="line"># *  *  *  *  * user-name  command to be executed</div><div class="line">59 23 30 */3 * /bin/bash /opt/letsencrypt/renewletsencrypt.sh  &gt;&gt; /opt/letsencrypt/renewletsencrypt.out 2&gt;&amp;1</div></pre></td></tr></table></figure></p>
+<p>以上，Nginx及SSL证书自动获取讲解完成。下次将介绍PHP。</p>
+
+      
+      
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我喝可乐<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/donate_alipay.jpg" width="130px" height="130px" title="支付宝打赏" alt="支付宝打赏">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/donate_wechat.jpg" width="130px" height="130px" title="微信打赏" alt="微信打赏">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    
+    </div>
+    
+
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/04/05/LNMP-on-CentOS7-01/">在CentOS7上配置LNMP环境：Nginx篇</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Jeff</a></p>
+        <p><span>发布时间:</span>2017-04-05, 16:15:14</p>
+        <p><span>最后更新:</span>2017-07-10, 14:26:25</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/04/05/LNMP-on-CentOS7-01/" title="在CentOS7上配置LNMP环境：Nginx篇">https://opstrip.com/2017/04/05/LNMP-on-CentOS7-01/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://opstrip.com/2017/04/05/LNMP-on-CentOS7-01/　　作者: Jeff" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/03/12/hexo-sitemap-keywords/">
+                    hexo配置sitemap以及设置keywords
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/04/07/LNMP-on-CentOS7-02/">
+                    在CentOS7上配置LNMP环境：PHP篇
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#安装Nginx"><span class="toc-number">1.</span> <span class="toc-text">安装Nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、安装Nginx依赖及常用软件包"><span class="toc-number">1.1.</span> <span class="toc-text">1、安装Nginx依赖及常用软件包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、安装前的准备"><span class="toc-number">1.2.</span> <span class="toc-text">2、安装前的准备</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、编译安装Nginx"><span class="toc-number">1.3.</span> <span class="toc-text">3、编译安装Nginx</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、配置Nginx服务并启动"><span class="toc-number">1.4.</span> <span class="toc-text">4、配置Nginx服务并启动</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置Nginx虚拟主机"><span class="toc-number">2.</span> <span class="toc-text">配置Nginx虚拟主机</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5、Nginx虚拟主机配置"><span class="toc-number">2.1.</span> <span class="toc-text">5、Nginx虚拟主机配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取并配置SSL证书"><span class="toc-number">3.</span> <span class="toc-text">获取并配置SSL证书</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6、使用Let‘s-encrypt免费证书"><span class="toc-number">3.1.</span> <span class="toc-text">6、使用Let‘s encrypt免费证书</span></a></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    <div id="share"><div class="bdsharebuttonbox"><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a><a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a><a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a><a href="#" class="bds_mail" data-cmd="mail" title="分享到邮件分享"></a><a href="#" class="bds_more" data-cmd="more"></a></div></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{},"image":{"viewList":["sqq","tsina","weixin","linkedin","douban","copy","mail","mshare"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["sqq","tsina","weixin","linkedin","douban","copy","mail","mshare"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'https://opstrip.com/2017/04/05/LNMP-on-CentOS7-01/';
+            this.page.identifier = '2017/04/05/LNMP-on-CentOS7-01/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//opstrip.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/03/12/hexo-sitemap-keywords/" title="上一篇: hexo配置sitemap以及设置keywords">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/04/07/LNMP-on-CentOS7-02/" title="下一篇: 在CentOS7上配置LNMP环境：PHP篇">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/Linux-Shell-Bash-Tips/">Linux Bash使用小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/02/Zabbix-Warning-for-qiyeWeChat/">Zabbix：企业微信告警配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/some-nginx-configuration-tips/">一些nginx配置小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/04/Common-Commands-for-Nginx-Log-Statistics/">Nginx日志统计分析常用命令</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/14/howto-monitor-raidCard-status-with-commandline-MegaCli/">MegaCli:如何使用命令行监控RAID卡状态</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/31/Deploying-php71-and-opening-MySQL-extension-on-CentOS7/">在CentOS7中部署php7.1及开启MySQL扩展</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/26/Mounting-ossfs-on-ECS/">阿里云：在ECS上挂载ossfs</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/19/nine-kinds-of-usage-for-iptables/">9个常用iptables配置实例</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/LNMP-on-CentOS7-02/">在CentOS7上配置LNMP环境：PHP篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/05/LNMP-on-CentOS7-01/">在CentOS7上配置LNMP环境：Nginx篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/12/hexo-sitemap-keywords/">hexo配置sitemap以及设置keywords</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/22/using-notes-for-postgresql-commandline/">PostgreSQL命令行使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/21/root-partition-expansion-for-centos7/">CentOS7下根分区扩容</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/20/the-notes-for-learning-firewalld/">Firewalld学习手记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/17/Using-Notes-For-KVM-02/">KVM学习手记：02 存储池、虚拟机及快照</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/16/Using-Notes-For-KVM-01/">KVM学习手记：01 安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/13/Iptables-Configuration-Examples/">iptables配置详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/12/common-usage-summary-for-git/">git常用用法小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/10/nginx-configuration-template/">nginx配置文件nginx.conf配置模版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/09/open-console-on-centos6-centos7/">CentOS 配置 console登录</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/05/the-new-features-of-centos7/">CentOS7版本的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/02/sendmail-with-python2/">使用Python发送邮件分享</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/30/Dynasty-PreQin-Crossing-Guide/">先秦穿越指南</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/11/a-broken-bicycle/">一辆旧自行车</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/create-pages/">创建页面</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+		<div class="footer-center">
+            <a href="/about" target="_self">关于站长</a> | <a href="/resume" target="_self">个人简历</a> | <a href="/sitemap.xml" target="_blank">网站地图</a> | <a href="/atom.xml" target="_blank">订阅本站</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1261281767&web_id=1261281767" language="JavaScript"></script>
+        </div>
+        <hr />
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                版权所有 &copy; 2016-2017 <a href="https://opstrip.com" target="_blank">Jeff</a> 保留所有权利 <a href="http://www.miitbeian.gov.cn/" target="_blank"> 沪ICP备17008273号-1 </a>
+            </div>
+            <div class="footer-right">
+                网站框架<a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>，主题<a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a>，设计师<a href="http://moxfive.xyz/" target="_blank">MOxFIVE</a> <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-90448941-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>

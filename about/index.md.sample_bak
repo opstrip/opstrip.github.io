@@ -1,0 +1,83 @@
+---
+title: 关于站长
+date: 2017-05-10 14:46:44
+layout: about
+toc: true
+comments: false
+---
+
+
+***
+
+### 基本资料
+
+||基本资料||
+| :------ | ------ | :------ |
+|姓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名： 石尧|性&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;别： 男|邮&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;箱： [&#115;&#104;&#105;&#121;&#97;&#111;&#46;&#122;&#104;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;](mailto:&#115;&#104;&#105;&#121;&#97;&#111;&#46;&#122;&#104;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;)|
+|职&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业： 资深运维|行&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;业： 互联网|工作年限： 9年|
+|地&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;址： 闵行·浦东|爱&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;好： 旅行、登山、互联网|主&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;页： [https://opstrip.com](https://opstrip.com "石尧的博客")|
+
+***
+
+### 自我评估
+- 八年以上 Linux 运维经验，两年公有云经验，一年私有云经验；
+- 熟悉 LNMP、Linux+nginx+tomcat+jdk 等常见架构及部分功能的优化；
+- 熟悉 Docker 容器、OpenStack/KVM 等虚拟化技术,了解 keepalived、haproxy、nginx 等高可用架构；
+- 了解 Oracle、Sybase、redis、Mongodb 及 MySQL 等数据库；
+- 爱好学习，喜欢技术分享，爱有挑战的工作并在挑战中不断提升。
+
+***
+
+### 教育
+- 河南，`郑州大学`，计算机网络<span style="float:right">2008/07</span><br/>
+- 主要课程：华为锐捷网络设计/计算机组成原理/C++程序设计/Linux应用
+
+***
+
+### 最近工作经历
+亿动广告传媒(200-500 人)<span style="float:right">黄浦，上海</span>
+**运维工程师** <span style="float:right">2016年份</span>
+#### **工作职责**:
+- 线上环境的发布更新、优化管理并在必要时配合研发人员进行故障定位、诊断;
+- OpenStack 环境的维护及 KVM 环境的搭建管理,内网虚机资源分配;
+- Amazon AWS 云及 Ucloud 云的维护管理，Jenkins 发布系统维护，版本控制系统 SVN/GIT 等的管理维护;
+- MySQL 主从备份故障处理；其他相关问题。
+#### **工作经验**:
+- 了解 AWS 及 UCloud 公有云，熟悉 KVM 虚拟化、了解 OpenStack 私有云及 ESXi 私有云技术;
+- 了解 Jenkins 发布系统，熟悉 GIT 及 SVN;
+- 了解 MySQL 备份机制及故障处理。
+
+***
+
+### 最近项目经验
+**KVM 环境搭建**<span style="float:right">2016/11</span>
+- 软件环境: CentOS7.2-KVM
+- 硬件环境: DELL PowerEdge 机架式服务器
+- 开发工具: SHELL/Python
+#### **项目描述**:
+- 使用 5 台机架式服务器组建 KVM 私有云，将开发与测试环境共 50 台设备从 OpenStack 上迁移至 KVM
+#### **责任描述**:
+- 迁移开发测试环境保证相关服务的正常运行
+
+**内网环境容器化迁移验证**<span style="float:right">2015年末</span>
+- 软件环境: CentOS6.4+Tomcat/PHP+Tengine
+- 硬件环境: ESXi 虚拟化环境
+#### **项目描述**: 
+- 搭建 Docker 私有仓库后,将应用的部署过程编写为 Dockerfile 并编译为镜像后逐一推送至私有仓库，然后在测试端运行相应镜像即可。在生产环境部署时则需拉取私有仓库相应镜像二次编译以实现生产与测试环境之间的差异性
+#### **责任描述**:
+- 测试验证内网开发测试环境的 Docker 化可行性
+
+***
+
+### 学习计划
+- Linux集群和自动化运维<span style="float:right">2017/02-2017/03</span>
+- OpenStack部署实践<span style="float:right">2017/03</span>
+- OpenStack运维指南<span style="float:right">2017/04</span>
+- Python3开发指南<span style="float:right">2017年度</span>
+- 构建高可用Linux服务器<span style="float:right">2017年度</span>
+
+***
+
+### 微信好友
+- 有共同兴趣的朋友，可以扫描以下的二维码添加微信好友：
+<center><img class="reward-img" src="/assets/img/pyWechat.jpg" width="150px" height="150px" title="扫一扫添加微信好友" alt="扫一扫添加微信好友"></center>

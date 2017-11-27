@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+
+    <!--[if lt IE 9]>
+        <style>body {display: none; background: none !important} </style>
+        <meta http-equiv="Refresh" Content="0; url=//outdatedbrowser.com/" />
+    <![endif]-->
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="format-detection" content="telephone=no" />
+<meta name="author" content="Jeff" />
+
+
+
+<meta name="description" content="简单介绍虚拟化及KVM，安装、配置并开启KVM服务，配置桥接网络。">
+<meta name="keywords" content="Linux,KVM,虚拟化,虚拟机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KVM学习手记：01 安装">
+<meta property="og:url" content="https://opstrip.com/2017/01/16/Using-Notes-For-KVM-01/index.html">
+<meta property="og:site_name" content="石尧的博客">
+<meta property="og:description" content="简单介绍虚拟化及KVM，安装、配置并开启KVM服务，配置桥接网络。">
+<meta property="og:updated_time" content="2017-05-04T07:08:13.326Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KVM学习手记：01 安装">
+<meta name="twitter:description" content="简单介绍虚拟化及KVM，安装、配置并开启KVM服务，配置桥接网络。">
+
+    <meta name="keywords" content="虚拟化 KVM 网桥配置 安装KVM centos7 客户机操作系统 主机操作系统,石尧的博客,极客,运维,IT网站,linux运维,运维笔记,学习笔记,备忘录">
+
+    <link rel="apple-touch-icon" href= "/apple-touch-icon.png">
+
+
+    <link rel="alternate" href="/atom.xml" title="石尧的博客" type="application/atom+xml">
+
+
+
+    <link rel="shortcut icon" href="/favicon.ico">
+
+
+
+
+    <!-- link href="//cdn.bootcss.com/animate.css/3.5.1/animate.min.css" rel="stylesheet" -->
+    <link href="/css/animate.min.css" rel="stylesheet">
+
+    
+
+
+    <link href="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet">
+
+
+
+    <script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+    <link href="//cdn.bootcss.com/pace/1.0.2/themes/blue/pace-theme-minimal.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="/css/style.css">
+
+
+
+    <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+
+
+<title>KVM学习手记：01 安装 | 石尧的博客</title>
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="//cdn.bootcss.com/clipboard.js/1.5.10/clipboard.min.js"></script>
+
+<script>
+    var yiliaConfig = {
+        fancybox: true,
+        animate: true,
+        isHome: false,
+        isPost: true,
+        isArchive: false,
+        isTag: false,
+        isCategory: false,
+        fancybox_js: "//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.min.js",
+        scrollreveal: "//cdn.bootcss.com/scrollReveal.js/3.1.4/scrollreveal.min.js",
+        search: undefined
+    }
+</script>
+
+
+    <script> yiliaConfig.jquery_ui = [false]; </script>
+
+
+
+    <script> yiliaConfig.rootUrl = "\/";</script>
+
+
+
+
+
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "//hm.baidu.com/hm.js?001b8e68e94860ea656f27fff61629f8";
+            var s = document.getElementsByTagName("script")[0]; 
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+
+
+</head>
+<body>
+  <div id="container">
+    <div class="left-col">
+    <div class="overlay"></div>
+<div class="intrude-less">
+    <header id="header" class="inner">
+        <a href="/" class="profilepic">
+            <img src="/assets/img/avator.jpg" class="animated zoomIn">
+        </a>
+        <hgroup>
+          <h1 class="header-author"><a href="/">Jeff</a></h1>
+        </hgroup>
+
+        
+        <p class="header-subtitle">精通原创，擅长盗版</p>
+        
+
+        
+
+
+        
+            <div id="switch-btn" class="switch-btn">
+                <div class="icon">
+                    <div class="icon-ctn">
+                        <div class="icon-wrap icon-house" data-idx="0">
+                            <div class="birdhouse"></div>
+                            <div class="birdhouse_holes"></div>
+                        </div>
+                        <div class="icon-wrap icon-ribbon hide" data-idx="1">
+                            <div class="ribbon"></div>
+                        </div>
+                        
+                        <div class="icon-wrap icon-link hide" data-idx="2">
+                            <div class="loopback_l"></div>
+                            <div class="loopback_r"></div>
+                        </div>
+                        
+                        
+                        <div class="icon-wrap icon-me hide" data-idx="3">
+                            <div class="user"></div>
+                            <div class="shoulder"></div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                <div class="tips-box hide">
+                    <div class="tips-arrow"></div>
+                    <ul class="tips-inner">
+                        <li>菜单</li>
+                        <li>标签</li>
+                        
+                        <li>友情链接</li>
+                        
+                        
+                        <li>关于我</li>
+                        
+                    </ul>
+                </div>
+            </div>
+        
+
+        <div id="switch-area" class="switch-area">
+            <div class="switch-wrap">
+                <section class="switch-part switch-part1">
+                    <nav class="header-menu">
+                        <ul>
+                        
+                            <li><a href="/">主页</a></li>
+                        
+                            <li><a href="/archives/">所有文章</a></li>
+                        
+                            <li><a href="/photos">相册</a></li>
+                        
+                            <li><a href="/tags/">标签云</a></li>
+                        
+                            <li><a href="/about/">关于我</a></li>
+                        
+                        </ul>
+                    </nav>
+                    <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" href="mailto:&#115;&#104;&#105;&#121;&#97;&#111;&#46;&#122;&#104;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" href="http://weibo.com/336847555" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" href="https://github.com/opstrip" title="GitHub"></a>
+                            
+                                <a class="fa RSS" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa Instagram" href="https://www.instagram.com/opstrip/" title="Instagram"></a>
+                            
+                        </ul>
+                    </nav>
+                </section>
+                
+                
+                <section class="switch-part switch-part2">
+                    <div class="widget tagcloud" id="js-tagcloud">
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/Bash/">Bash</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS6/">CentOS6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CentOS7/">CentOS7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/DOS攻击防范/">DOS攻击防范</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ECS/">ECS</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/GitHub/">GitHub</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/KVM/">KVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/LNMP/">LNMP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Linux/">Linux</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MegaCli/">MegaCli</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/PostgreSQL/">PostgreSQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Python/">Python</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAID/">RAID</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SEO/">SEO</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/SQL大全/">SQL大全</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shell/">Shell</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WEB流量均衡/">WEB流量均衡</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/WeChat/">WeChat</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos6/">centos6</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/centos7/">centos7</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/chain策略/">chain策略</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/console/">console</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/firewalld/">firewalld</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git用法/">git用法</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iptables/">iptables</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/keywords/">keywords</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lv/">lv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/lvm/">lvm</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nginx/">nginx</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/ossfs/">ossfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/pv/">pv</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sendmail/">sendmail</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sitemap/">sitemap</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/vg/">vg</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xfs/">xfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xfs-growfs/">xfs_growfs</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zabbix/">zabbix</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/使用详解/">使用详解</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/关键字/">关键字</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分区扩展/">分区扩展</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/分类/">分类</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/博客/">博客</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/参考样例/">参考样例</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/告警配置/">告警配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/备忘录/">备忘录</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/学习笔记/">学习笔记</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/小技巧/">小技巧</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/屏蔽指定IP/">屏蔽指定IP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/常用命令/">常用命令</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/挂载/">挂载</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/搭建配置/">搭建配置</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/新特性/">新特性</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/日志分析/">日志分析</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/旧事/">旧事</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/测试用例/">测试用例</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/版本控制/">版本控制</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/磁盘阵列/">磁盘阵列</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/福利/">福利</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/穿越指南/">穿越指南</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/端口转发/">端口转发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/系统变更/">系统变更</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/网络转发/">网络转发</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/花生油/">花生油</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟化/">虚拟化</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/虚拟机/">虚拟机</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/西红柿/">西红柿</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/辣椒/">辣椒</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/配置模板/">配置模板</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/闲谈/">闲谈</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/阿里云/">阿里云</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/随笔/">随笔</a></li></ul>
+                    </div>
+                </section>
+                
+                
+                
+                <section class="switch-part switch-part3">
+                    <div id="js-friends">
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://hexo.io">Hexo</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="https://pages.github.com/">GitHub</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://blog.whichmyhouse.com">国庆</a>
+                    
+                      <a class="main-nav-link switch-friends-link" href="http://xxgblog.com">叉叉哥</a>
+                    
+                    </div>
+                </section>
+                
+
+                
+                
+                <section class="switch-part switch-part4">
+                
+                    <div id="js-aboutme">八年Linux运维 近四年来开始关注公有云技术 还是个小学生 最近开始写博客 请多关照 谢谢</div>
+                </section>
+                
+            </div>
+        </div>
+    </header>                
+</div>
+    </div>
+    <div class="mid-col">
+      <nav id="mobile-nav">
+      <div class="overlay">
+          <div class="slider-trigger"></div>
+          <h1 class="header-author js-mobile-header hide"><a href="/" title="回到主页">Jeff</a></h1>
+      </div>
+    <div class="intrude-less">
+        <header id="header" class="inner">
+            <a href="/" class="profilepic">
+                <img src="/assets/img/avator.jpg" class="animated zoomIn">
+            </a>
+            <hgroup>
+              <h1 class="header-author"><a href="/" title="回到主页">Jeff</a></h1>
+            </hgroup>
+            
+            <p class="header-subtitle">精通原创，擅长盗版</p>
+            
+            <nav class="header-menu">
+                <ul>
+                
+                    <li><a href="/">主页</a></li>
+                
+                    <li><a href="/archives/">所有文章</a></li>
+                
+                    <li><a href="/photos">相册</a></li>
+                
+                    <li><a href="/tags/">标签云</a></li>
+                
+                    <li><a href="/about/">关于我</a></li>
+                
+                <div class="clearfix"></div>
+                </ul>
+            </nav>
+            <nav class="header-nav">
+                        <ul class="social">
+                            
+                                <a class="fa Email" target="_blank" href="mailto:&#115;&#104;&#105;&#121;&#97;&#111;&#46;&#122;&#104;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;" title="Email"></a>
+                            
+                                <a class="fa 新浪微博" target="_blank" href="http://weibo.com/336847555" title="新浪微博"></a>
+                            
+                                <a class="fa GitHub" target="_blank" href="https://github.com/opstrip" title="GitHub"></a>
+                            
+                                <a class="fa RSS" target="_blank" href="/atom.xml" title="RSS"></a>
+                            
+                                <a class="fa Instagram" target="_blank" href="https://www.instagram.com/opstrip/" title="Instagram"></a>
+                            
+                        </ul>
+            </nav>
+        </header>                
+    </div>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
+</nav>
+      <div class="body-wrap"><article id="post-Using-Notes-For-KVM-01" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/01/16/Using-Notes-For-KVM-01/" class="article-date">
+      <time datetime="2017-01-16T02:52:54.000Z" itemprop="datePublished">2017-01-16</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      KVM学习手记：01 安装
+    </h1>
+  
+
+      </header>
+      
+      <div class="article-info article-info-post">
+        
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/虚拟化/">虚拟化</a>
+    </div>
+
+
+        
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/KVM/">KVM</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟化/">虚拟化</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/虚拟机/">虚拟机</a></li></ul>
+    </div>
+
+        <div class="clearfix"></div>
+      </div>
+      
+    
+      
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p><strong>认识<code>虚拟化</code></strong><br>在计算机中，<code>虚拟化</code>（英语：Virtualization）是一种资源管理技术，是将计算机的各种实体资源，如服务器、网络、内存及存储等，予以抽象、转换后呈现出来，打破实体结构间的不可切割的障碍，使用户可以比原本的组态更好的方式来应用这些资源。这些资源的新虚拟部份是不受现有资源的架设方式，地域或物理组态所限制。一般所指的<code>虚拟化资源</code>包括计算能力和资料存储。在实际的生产环境中，<code>虚拟化技术</code>主要用来解决高性能的物理硬件产能过剩和老的旧的硬件产能过低的重组重用，透明化底层物理硬件，从而最大化的利用物理硬件。</p>
+<p><strong>虚拟化技术的分类</strong><br><code>虚拟化</code>技术主要分为以下几个大类 [1]：</p>
+<h4 id="平台虚拟化（Platform-Virtualization），针对计算机和操作系统的虚拟化。"><a href="#平台虚拟化（Platform-Virtualization），针对计算机和操作系统的虚拟化。" class="headerlink" title="平台虚拟化（Platform Virtualization），针对计算机和操作系统的虚拟化。"></a><strong>平台虚拟化</strong>（Platform Virtualization），针对计算机和操作系统的<code>虚拟化</code>。</h4><h4 id="资源虚拟化（Resource-Virtualization），针对特定的系统资源的虚拟化，比如内存、存储、网络资源等。"><a href="#资源虚拟化（Resource-Virtualization），针对特定的系统资源的虚拟化，比如内存、存储、网络资源等。" class="headerlink" title="资源虚拟化（Resource Virtualization），针对特定的系统资源的虚拟化，比如内存、存储、网络资源等。"></a><strong>资源虚拟化</strong>（Resource Virtualization），针对特定的系统资源的<code>虚拟化</code>，比如内存、存储、网络资源等。</h4><h4 id="应用程序虚拟化（Application-Virtualization），包括仿真、模拟、解释技术等。"><a href="#应用程序虚拟化（Application-Virtualization），包括仿真、模拟、解释技术等。" class="headerlink" title="应用程序虚拟化（Application Virtualization），包括仿真、模拟、解释技术等。"></a><strong>应用程序虚拟化</strong>（Application Virtualization），包括仿真、模拟、解释技术等。</h4><p>我们通常所说的<code>虚拟化</code>主要是指<code>平台虚拟化技术</code>，通过使用控制程序（Control Program，也被称为 Virtual Machine Monitor 或 Hypervisor），隐藏特定计算平台的实际物理特性，为用户提供抽象的、统一的、模拟的计算环境（称为虚拟机）。虚拟机中运行的操作系统被称为客户机操作系统（Guest OS），运行虚拟机监控器的操作系统被称为主机操作系统（Host OS），当然某些虚拟机监控器可以脱离操作系统直接运行在硬件之上（如 VMWARE 的 ESX 产品）。运行虚拟机的真实系统我们称之为主机系统。<br><code>平台虚拟化技术</code>又可以细分为如下几个子类：</p>
+<a id="more"></a>
+<h5 id="全虚拟化（Full-Virtualization）"><a href="#全虚拟化（Full-Virtualization）" class="headerlink" title="全虚拟化（Full Virtualization）"></a><strong>全虚拟化</strong>（Full Virtualization）</h5><p><code>全虚拟化</code>是指虚拟机模拟了完整的底层硬件，包括处理器、物理内存、时钟、外设等，使得为原始硬件设计的操作系统或其它系统软件完全不做任何修改就可以在虚拟机中运行。操作系统与真实硬件之间的交互可以看成是通过一个预先规定的硬件接口进行的。<code>全虚拟化</code> VMM 以完整模拟硬件的方式提供全部接口（同时还必须模拟特权指令的执行过程）。举例而言，x86 体系结构中，对于操作系统切换进程页表的操作，真实硬件通过提供一个特权 CR3 寄存器来实现该接口，操作系统只需执行 “mov pgtable,%%cr3” 汇编指令即可。<code>全虚拟化</code> VMM 必须完整地模拟该接口执行的全过程。如果硬件不提供<code>虚拟化</code>的特殊支持，那么这个模拟过程将会十分复杂：一般而言，VMM 必须运行在最高优先级来完全控制主机系统，而 Guest OS 需要降级运行，从而不能执行特权操作。当 Guest OS 执行前面的特权汇编指令时，主机系统产生异常（General Protection Exception），执行控制权重新从 Guest OS 转到 VMM 手中。VMM 事先分配一个变量作为影子 CR3 寄存器给 Guest OS，将 pgtable 代表的客户机物理地址（Guest Physical Address）填入影子 CR3 寄存器，然后 VMM 还需要 pgtable 翻译成主机物理地址（Host Physical Address）并填入物理 CR3 寄存器，最后返回到 Guest OS中。随后 VMM 还将处理复杂的 Guest OS 缺页异常（Page Fault）。比较著名的<code>全虚拟化</code> VMM 有 Microsoft Virtual PC、VMware Workstation、Sun Virtual Box、Parallels Desktop for Mac 和 QEMU。</p>
+<h5 id="超虚拟化（Paravirtualization）"><a href="#超虚拟化（Paravirtualization）" class="headerlink" title="超虚拟化（Paravirtualization）"></a><code>超虚拟化</code>（Paravirtualization）</h5><p>这是一种修改 Guest OS 部分访问特权状态的代码以便直接与 VMM 交互的技术。在<code>超虚拟化</code>虚拟机中，部分硬件接口以软件的形式提供给客户机操作系统，这可以通过 Hypercall（VMM 提供给 Guest OS 的直接调用，与系统调用类似）的方式来提供。例如，Guest OS 把切换页表的代码修改为调用 Hypercall 来直接完成修改影子 CR3 寄存器和翻译地址的工作。由于不需要产生额外的异常和模拟部分硬件执行流程，<code>超虚拟化</code>可以大幅度提高性能，比较著名的 VMM 有 Denali、Xen。</p>
+<h5 id="硬件辅助虚拟化（Hardware-Assisted-Virtualization）"><a href="#硬件辅助虚拟化（Hardware-Assisted-Virtualization）" class="headerlink" title="硬件辅助虚拟化（Hardware-Assisted Virtualization）"></a><code>硬件辅助虚拟化</code>（Hardware-Assisted Virtualization）</h5><p><code>硬件辅助虚拟化</code>是指借助硬件（主要是主机处理器）的支持来实现高效的<code>全虚拟化</code>。例如有了 Intel-VT 技术的支持，Guest OS 和 VMM 的执行环境自动地完全隔离开来，Guest OS 有自己的“全套寄存器”，可以直接运行在最高级别。因此在上面的例子中，Guest OS 能够执行修改页表的汇编指令。Intel-VT 和 AMD-V 是目前 x86 体系结构上可用的两种<code>硬件辅助虚拟化</code>技术。</p>
+<h5 id="部分虚拟化（Partial-Virtualization）"><a href="#部分虚拟化（Partial-Virtualization）" class="headerlink" title="部分虚拟化（Partial Virtualization）"></a><code>部分虚拟化</code>（Partial Virtualization）</h5><p>VMM 只模拟部分底层硬件，因此客户机操作系统不做修改是无法在虚拟机中运行的，其它程序可能也需要进行修改。在历史上，<code>部分虚拟化</code>是通往<code>全虚拟化</code>道路上的重要里程碑，最早出现在第一代的分时系统 CTSS 和 IBM M44/44X 实验性的分页系统中。</p>
+<h5 id="操作系统级虚拟化（Operating-System-Level-Virtualization）"><a href="#操作系统级虚拟化（Operating-System-Level-Virtualization）" class="headerlink" title="操作系统级虚拟化（Operating System Level Virtualization）"></a><code>操作系统级虚拟化</code>（Operating System Level Virtualization）</h5><p>在传统操作系统中，所有用户的进程本质上是在同一个操作系统的实例中运行，因此内核或应用程序的缺陷可能影响到其它进程。<code>操作系统级虚拟化</code>是一种在服务器操作系统中使用的轻量级的<code>虚拟化</code>技术，内核通过创建多个虚拟的操作系统实例（内核和库）来隔离不同的进程，不同实例中的进程完全不了解对方的存在。比较著名的有 Solaris Container [2]，FreeBSD Jail 和 OpenVZ 等。<br>这种分类并不是绝对的，一个优秀的<code>虚拟化</code>软件往往融合了多项技术。例如 VMware Workstation 是一个著名的<code>全虚拟化</code>的 VMM，但是它使用了一种被称为动态二进制翻译的技术把对特权状态的访问转换成对影子状态的操作，从而避免了低效的 Trap-And-Emulate 的处理方式，这与<code>超虚拟化</code>相似，只不过<code>超虚拟化</code>是静态地修改程序代码。对于<code>超虚拟化</code>而言，如果能利用硬件特性，那么虚拟机的管理将会大大简化，同时还能保持较高的性能。</p>
+<hr>
+<h3 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h3><h4 id="认识KVM"><a href="#认识KVM" class="headerlink" title="认识KVM"></a><strong>认识<code>KVM</code></strong></h4><p>好了，虚拟化的概念就简单的说这么多了。是时候介绍一下今天的主角————<code>KVM</code>了。<br><code>KVM</code>全称<code>***Kernel-based  Virtual Machine***</code>, 其实kvm只是一个内核模块，提供虚拟cpu和内存管理的模块，至于其它的设备是由qemu模拟的，如网卡，显卡，磁盘等。后来redhat联合IBM以及Linux社区创造了libvirt，模拟的设备性能要比qemu的好很多，并提供了一系列的管理工具和api，整个集成了kvm虚拟化的解决方案。Linux(redhat系)装载kvm模块后，摇身一变成为了VM Monitor，也称为Hypervisor，部署使用简单，需要硬件支持虚拟化。</p>
+<h4 id="安装KVM"><a href="#安装KVM" class="headerlink" title="安装KVM"></a><strong>安装KVM</strong></h4><h5 id="0-实验-作业环境"><a href="#0-实验-作业环境" class="headerlink" title="0.实验/作业环境"></a>0.实验/作业环境</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">#物理主机端：</div><div class="line">#操作系统：Win7旗舰版64位</div><div class="line">#CPU：Intel Core i5-6200U</div><div class="line">#软件环境：VMWareStation12.0</div><div class="line">#其他：在BIOS中开启了VT功能</div><div class="line">#宿主机端：</div><div class="line">#操作系统：CentOS7.3</div><div class="line">#软件支持：libvirt/qemu/bridge</div></pre></td></tr></table></figure>
+<h5 id="1-检测硬件是否支持虚拟化"><a href="#1-检测硬件是否支持虚拟化" class="headerlink" title="1.检测硬件是否支持虚拟化"></a>1.检测硬件是否支持虚拟化</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@myprecious ~]<span class="comment"># egrep '(vmx|svm)' --color=always /proc/cpuinfo </span></div><div class="line">[root@myprecious ~]<span class="comment"># modprobe kvm </span></div><div class="line">[root@myprecious ~]<span class="comment"># modprobe kvm_intel || modprobe kvm_amd</span></div></pre></td></tr></table></figure>
+<p>如果输出结果含有vmx或者svm字样，则表示支持CPU虚拟化，Intel是vmx，AMD是svm，也需要检测是否有kvm_xxx模块，如果装载不成功，可能是没有开启硬件虚拟化,需要bios中开启，具体开启方式请联系厂家。</p>
+<h5 id="2-升级安装常用软件及虚拟化服务并启动"><a href="#2-升级安装常用软件及虚拟化服务并启动" class="headerlink" title="2.升级安装常用软件及虚拟化服务并启动"></a>2.升级安装常用软件及虚拟化服务并启动</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">[root@myprecious ~]<span class="comment"># yum clean all</span></div><div class="line">[root@myprecious ~]<span class="comment"># yum makecache</span></div><div class="line">[root@myprecious ~]<span class="comment"># yum upgrade -y # 升级宿主机系统软件</span></div><div class="line">[root@myprecious ~]<span class="comment"># yum -y install qemu-kvm libvirt virt-install bridge-utils</span></div><div class="line">[root@myprecious ~]<span class="comment"># yum -y install vim wget gcc make crontabs mlocate ntp lrzsz telnet* gcc-c++ autoconf setuptool ntsysv system-config-securitylevel-tui system-config-network-tui sysstat dstat screen # 安装常用软件</span></div><div class="line">[root@myprecious ~]<span class="comment"># yum -y groupinstall Virtualization 'Virtualization Client' 'Virtualization Platform' 'Virtualization Tools'    # 安装虚拟化软件包</span></div><div class="line">[root@myprecious ~]<span class="comment"># lsmod | grep kvm  # 确保模块已加载</span></div><div class="line">       441119  0</div><div class="line">[root@myprecious ~]<span class="comment"># systemctl start libvirtd</span></div><div class="line">[root@myprecious ~]<span class="comment"># systemctl enable libvirtd</span></div></pre></td></tr></table></figure>
+<p><code>注：centos7上服务的管理方式换成了systemctl</code></p>
+<h5 id="3-检查是否有kvm模块，如果有则继续"><a href="#3-检查是否有kvm模块，如果有则继续" class="headerlink" title="3.检查是否有kvm模块，如果有则继续"></a>3.检查是否有kvm模块，如果有则继续</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@myprecious ~]<span class="comment"># lsmod | grep kvm </span></div><div class="line">kvm_intel              52570  30  </div><div class="line">kvm                   314739  1 kvm_intel</div></pre></td></tr></table></figure>
+<h5 id="4-配置桥接网络br0"><a href="#4-配置桥接网络br0" class="headerlink" title="4.配置桥接网络br0"></a>4.配置桥接网络br0</h5><p>centos7上默认已不再是eth0、eth1，比如，在我的机器上安装好的第一块网卡成为了eno16777736，修改步骤和centos6上没有区别。拿我这台测试电脑来说，常见配置网桥方法如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div></pre></td><td class="code"><pre><div class="line">[root@myprecious ~]<span class="comment"># cd /etc/sysconfig/network-scripts/</span></div><div class="line">[root@myprecious ~]<span class="comment"># cat ifcfg-br0</span></div><div class="line">TYPE=Bridge</div><div class="line">BOOTPROTO=none</div><div class="line">DEVICE=br0</div><div class="line">ONBOOT=yes</div><div class="line">IPADDR0=192.168.107.240</div><div class="line">PREFIX0=22</div><div class="line">GATEWAY0=192.168.104.254</div><div class="line"><span class="comment">#NM_CONTROLLED=no</span></div><div class="line">[root@myprecious ~]<span class="comment"># cat ifcfg-eno16777736</span></div><div class="line">DEVICE=eno16777736</div><div class="line">TYPE=Ethernet</div><div class="line">ONBOOT=yes</div><div class="line">BRIDGE=br0</div><div class="line"><span class="comment">#NM_CONTROLLED=no</span></div><div class="line">[root@myprecious ~]<span class="comment"># reboot</span></div><div class="line">[root@myprecious ~]<span class="comment"># ifconfig</span></div><div class="line">br0: flags=4163  mtu 1500</div><div class="line">        inet 192.168.107.240  netmask 255.255.252.0  broadcast 192.168.107.255</div><div class="line">        inet6 fe80::7a24:afff:fe46:ca60  prefixlen 64  scopeid 0x20</div><div class="line">        ether 78:24:af:46:ca:60  txqueuelen 0  (Ethernet)</div><div class="line">        RX packets 129  bytes 14676 (14.3 KiB)</div><div class="line">        RX errors 0  dropped 0  overruns 0  frame 0</div><div class="line">        TX packets 148  bytes 21994 (21.4 KiB)</div><div class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</div><div class="line">eno16777736: flags=4163  mtu 1500</div><div class="line">        ether 00:0c:29:24:02:98  txqueuelen 1000  (Ethernet)</div><div class="line">        RX packets 129  bytes 16482 (16.0 KiB)</div><div class="line">        RX errors 0  dropped 0  overruns 0  frame 0</div><div class="line">        TX packets 148  bytes 21994 (21.4 KiB)</div><div class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</div><div class="line">lo: flags=73  mtu 65536</div><div class="line">        inet 127.0.0.1  netmask 255.0.0.0</div><div class="line">        inet6 ::1  prefixlen 128  scopeid 0x10</div><div class="line">        loop  txqueuelen 0  (Local Loopback)</div><div class="line">        RX packets 9  bytes 728 (728.0 B)</div><div class="line">        RX errors 0  dropped 0  overruns 0  frame 0</div><div class="line">        TX packets 9  bytes 728 (728.0 B)</div><div class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</div><div class="line">virbr0: flags=4099  mtu 1500</div><div class="line">        inet 192.168.122.1  netmask 255.255.255.0  broadcast 192.168.122.255</div><div class="line">        ether a6:88:9f:14:b2:66  txqueuelen 0  (Ethernet)</div><div class="line">        RX packets 0  bytes 0 (0.0 B)</div><div class="line">        RX errors 0  dropped 0  overruns 0  frame 0</div><div class="line">        TX packets 1  bytes 90 (90.0 B)</div><div class="line">        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0</div><div class="line">[root@myprecious ~]<span class="comment"># ip add show</span></div><div class="line">1: lo:  mtu 65536 qdisc noqueue state UNKNOWN</div><div class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</div><div class="line">    inet 127.0.0.1/8 scope host lo</div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">    inet6 ::1/128 scope host</div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">2: eno16777736:  mtu 1500 qdisc pfifo_fast master br0 state UP qlen 1000</div><div class="line">    link/ether 78:24:af:46:ca:60 brd ff:ff:ff:ff:ff:ff</div><div class="line">3: br0:  mtu 1500 qdisc noqueue state UP</div><div class="line">    link/ether 78:24:af:46:ca:60 brd ff:ff:ff:ff:ff:ff</div><div class="line">    inet 192.168.0.102/24 brd 192.168.0.255 scope global br0</div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">    inet6 fe80::7a24:afff:fe46:ca60/64 scope link</div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">4: virbr0:  mtu 1500 qdisc noqueue state DOWN</div><div class="line">    link/ether a6:88:9f:14:b2:66 brd ff:ff:ff:ff:ff:ff</div><div class="line">    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0</div><div class="line">       valid_lft forever preferred_lft forever</div></pre></td></tr></table></figure></p>
+<p><del><code>***说明***</code>：以上网卡配置文件中，<code>NM_CONTROLLED</code>这个属性值，根据redhat公司的文档是必须设置为“no”的（这个值为“yes”表示可以由服务<code>NetworkManager</code>来管理。<code>NetworkManager</code>服务不支持桥接，所以要设置为“no”。）</del></p>
+<p>由于该宿主机使用的是虚拟化环境非原生的物理网络，由VMWare与Windows桥接（通常在Windows中被识别为VMnet0的虚拟网卡）使用，VMWare已经为我们创建了虚拟网桥<code>virbr0</code>，所以这里我们就不用配置了。如下：<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line">[root@myprecious ~]<span class="comment"># ip add show</span></div><div class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN qlen 1</div><div class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</div><div class="line">    inet 127.0.0.1/8 scope host lo</div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">    inet6 ::1/128 scope host </div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">2: eno16777736: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000</div><div class="line">    link/ether 00:0c:29:24:02:98 brd ff:ff:ff:ff:ff:ff</div><div class="line">    inet 192.168.104.240/22 brd 192.168.107.255 scope global eno16777736</div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">    inet6 fe80::20c:29ff:fe24:298/64 scope link </div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">3: virbr0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue state DOWN qlen 1000</div><div class="line">    link/ether 52:54:00:fe:f9:2b brd ff:ff:ff:ff:ff:ff</div><div class="line">    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0</div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">4: virbr0-nic: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc pfifo_fast master virbr0 state DOWN qlen 1000</div><div class="line">    link/ether 52:54:00:fe:f9:2b brd ff:ff:ff:ff:ff:ff</div><div class="line">[root@myprecious ~]<span class="comment"># brctl show</span></div><div class="line">bridge name     bridge id               STP enabled     interfaces</div><div class="line">virbr0          8000.525400fef92b       yes             virbr0-nic</div></pre></td></tr></table></figure></p>
+<p><code>注：由于</code>ip<code>命令属于</code>iproute2<code>软件包中的工具，由于代替旧的</code>ifconfig<code>命令，尽可能的习惯使用新的命令和工具包来淘汰老的软件和工具。</code></p>
+<h5 id="5-关闭selinux"><a href="#5-关闭selinux" class="headerlink" title="5.关闭selinux"></a>5.关闭selinux</h5><p>同centos6<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@myprecious ~]<span class="comment"># setenforce  0</span></div><div class="line">[root@myprecious ~]<span class="comment"># sed -i 's/=enforcing/=disabled/g' /etc/selinux/config</span></div></pre></td></tr></table></figure></p>
+<p>–(待续)–</p>
+<hr>
+<p>参考信息：<a href="http://www.ibm.com/developerworks/cn/linux/l-cn-vt/index.html" target="_blank" rel="external">http://www.ibm.com/developerworks/cn/linux/l-cn-vt/index.html</a>（虚拟化介绍）</p>
+
+      
+      
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我喝可乐<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/donate_alipay.jpg" width="130px" height="130px" title="支付宝打赏" alt="支付宝打赏">
+                      <span class="reward-type">支付宝</span>
+                    </div>
+                    
+                    
+                    <div class="reward-box-item">
+                      <img class="reward-img" src="/assets/img/donate_wechat.jpg" width="130px" height="130px" title="微信打赏" alt="微信打赏">
+                      <span class="reward-type">微信</span>
+                    </div>
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    
+    </div>
+    
+
+    
+  </div>
+  
+    
+    <div class="copyright">
+        <p><span>本文标题:</span><a href="/2017/01/16/Using-Notes-For-KVM-01/">KVM学习手记：01 安装</a></p>
+        <p><span>文章作者:</span><a href="/" title="回到主页">Jeff</a></p>
+        <p><span>发布时间:</span>2017-01-16, 10:52:54</p>
+        <p><span>最后更新:</span>2017-05-04, 15:08:13</p>
+        <p>
+            <span>原始链接:</span><a class="post-url" href="/2017/01/16/Using-Notes-For-KVM-01/" title="KVM学习手记：01 安装">https://opstrip.com/2017/01/16/Using-Notes-For-KVM-01/</a>
+            <span class="copy-path" data-clipboard-text="原文: https://opstrip.com/2017/01/16/Using-Notes-For-KVM-01/　　作者: Jeff" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <script> var clipboard = new Clipboard('.copy-path'); </script>
+        </p>
+        <p>
+            <span>许可协议:</span><i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+        </p>
+    </div>
+
+
+
+    <nav id="article-nav">
+        
+            <div id="article-nav-newer" class="article-nav-title">
+                <a href="/2017/01/13/Iptables-Configuration-Examples/">
+                    iptables配置详解
+                </a>
+            </div>
+        
+        
+            <div id="article-nav-older" class="article-nav-title">
+                <a href="/2017/01/17/Using-Notes-For-KVM-02/">
+                    KVM学习手记：02 存储池、虚拟机及快照
+                </a>
+            </div>
+        
+    </nav>
+
+  
+</article>
+
+    <div id="toc" class="toc-article">
+        <strong class="toc-title">文章目录</strong>
+        
+            <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#引言"><span class="toc-number">1.</span> <span class="toc-text">引言</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#平台虚拟化（Platform-Virtualization），针对计算机和操作系统的虚拟化。"><span class="toc-number">1.1.</span> <span class="toc-text">平台虚拟化（Platform Virtualization），针对计算机和操作系统的虚拟化。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#资源虚拟化（Resource-Virtualization），针对特定的系统资源的虚拟化，比如内存、存储、网络资源等。"><span class="toc-number">1.2.</span> <span class="toc-text">资源虚拟化（Resource Virtualization），针对特定的系统资源的虚拟化，比如内存、存储、网络资源等。</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#应用程序虚拟化（Application-Virtualization），包括仿真、模拟、解释技术等。"><span class="toc-number">1.3.</span> <span class="toc-text">应用程序虚拟化（Application Virtualization），包括仿真、模拟、解释技术等。</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#全虚拟化（Full-Virtualization）"><span class="toc-number">1.3.1.</span> <span class="toc-text">全虚拟化（Full Virtualization）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#超虚拟化（Paravirtualization）"><span class="toc-number">1.3.2.</span> <span class="toc-text">超虚拟化（Paravirtualization）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#硬件辅助虚拟化（Hardware-Assisted-Virtualization）"><span class="toc-number">1.3.3.</span> <span class="toc-text">硬件辅助虚拟化（Hardware-Assisted Virtualization）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#部分虚拟化（Partial-Virtualization）"><span class="toc-number">1.3.4.</span> <span class="toc-text">部分虚拟化（Partial Virtualization）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#操作系统级虚拟化（Operating-System-Level-Virtualization）"><span class="toc-number">1.3.5.</span> <span class="toc-text">操作系统级虚拟化（Operating System Level Virtualization）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#正文"><span class="toc-number">2.</span> <span class="toc-text">正文</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#认识KVM"><span class="toc-number">2.1.</span> <span class="toc-text">认识KVM</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#安装KVM"><span class="toc-number">2.2.</span> <span class="toc-text">安装KVM</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#0-实验-作业环境"><span class="toc-number">2.2.1.</span> <span class="toc-text">0.实验/作业环境</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#1-检测硬件是否支持虚拟化"><span class="toc-number">2.2.2.</span> <span class="toc-text">1.检测硬件是否支持虚拟化</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-升级安装常用软件及虚拟化服务并启动"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.升级安装常用软件及虚拟化服务并启动</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-检查是否有kvm模块，如果有则继续"><span class="toc-number">2.2.4.</span> <span class="toc-text">3.检查是否有kvm模块，如果有则继续</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#4-配置桥接网络br0"><span class="toc-number">2.2.5.</span> <span class="toc-text">4.配置桥接网络br0</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#5-关闭selinux"><span class="toc-number">2.2.6.</span> <span class="toc-text">5.关闭selinux</span></a></li></ol></li></ol></li></ol>
+        
+    </div>
+    <style>
+        .left-col .switch-btn,
+        .left-col .switch-area {
+            display: none;
+        }
+        .toc-level-3 i,
+        .toc-level-3 ol {
+            display: none !important;
+        }
+    </style>
+
+    <input type="button" id="tocButton" value="隐藏目录"  title="点击按钮隐藏或者显示文章目录">
+
+    <script>
+        yiliaConfig.toc = ["隐藏目录", "显示目录", !!"false"];
+    </script>
+
+
+
+    <div id="share"><div class="bdsharebuttonbox"><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_linkedin" data-cmd="linkedin" title="分享到linkedin"></a><a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a><a href="#" class="bds_copy" data-cmd="copy" title="分享到复制网址"></a><a href="#" class="bds_mail" data-cmd="mail" title="分享到邮件分享"></a><a href="#" class="bds_more" data-cmd="more"></a></div></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{},"image":{"viewList":["sqq","tsina","weixin","linkedin","douban","copy","mail","mshare"],"viewText":"分享到：","viewSize":"16"},"selectShare":{"bdContainerClass":null,"bdSelectMiniList":["sqq","tsina","weixin","linkedin","douban","copy","mail","mshare"]}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
+
+    
+        <section id="comments">
+    <style> aside.comment-bar { margin: auto 30px; }</style>
+    <div id="disqus_thread"></div>
+    <script>
+        var disqus_config = function(){
+            this.page.url = 'https://opstrip.com/2017/01/16/Using-Notes-For-KVM-01/';
+            this.page.identifier = '2017/01/16/Using-Notes-For-KVM-01/';
+        };
+        var loadComment = function(){
+            var d = document, s = d.createElement('script');
+            s.src = '//opstrip.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        }
+    </script>
+    
+    <script> loadComment(); </script>
+
+</section>
+
+
+    
+
+
+
+
+    <div class="scroll" id="post-nav-button">
+        
+            <a href="/2017/01/13/Iptables-Configuration-Examples/" title="上一篇: iptables配置详解">
+                <i class="fa fa-angle-left"></i>
+            </a>
+        
+
+        <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
+
+        
+            <a href="/2017/01/17/Using-Notes-For-KVM-02/" title="下一篇: KVM学习手记：02 存储池、虚拟机及快照">
+                <i class="fa fa-angle-right"></i>
+            </a>
+        
+    </div>
+
+    <ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/11/27/Linux-Shell-Bash-Tips/">Linux Bash使用小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/11/02/Zabbix-Warning-for-qiyeWeChat/">Zabbix：企业微信告警配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/some-nginx-configuration-tips/">一些nginx配置小技巧</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/04/Common-Commands-for-Nginx-Log-Statistics/">Nginx日志统计分析常用命令</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/06/14/howto-monitor-raidCard-status-with-commandline-MegaCli/">MegaCli:如何使用命令行监控RAID卡状态</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/31/Deploying-php71-and-opening-MySQL-extension-on-CentOS7/">在CentOS7中部署php7.1及开启MySQL扩展</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/26/Mounting-ossfs-on-ECS/">阿里云：在ECS上挂载ossfs</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/05/19/nine-kinds-of-usage-for-iptables/">9个常用iptables配置实例</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/07/LNMP-on-CentOS7-02/">在CentOS7上配置LNMP环境：PHP篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/04/05/LNMP-on-CentOS7-01/">在CentOS7上配置LNMP环境：Nginx篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/03/12/hexo-sitemap-keywords/">hexo配置sitemap以及设置keywords</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/22/using-notes-for-postgresql-commandline/">PostgreSQL命令行使用手册</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/21/root-partition-expansion-for-centos7/">CentOS7下根分区扩容</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/20/the-notes-for-learning-firewalld/">Firewalld学习手记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/17/Using-Notes-For-KVM-02/">KVM学习手记：02 存储池、虚拟机及快照</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/16/Using-Notes-For-KVM-01/">KVM学习手记：01 安装</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/13/Iptables-Configuration-Examples/">iptables配置详解</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/12/common-usage-summary-for-git/">git常用用法小结</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/10/nginx-configuration-template/">nginx配置文件nginx.conf配置模版</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/01/09/open-console-on-centos6-centos7/">CentOS 配置 console登录</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/05/the-new-features-of-centos7/">CentOS7版本的新特性</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/12/02/sendmail-with-python2/">使用Python发送邮件分享</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/30/Dynasty-PreQin-Crossing-Guide/">先秦穿越指南</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/11/a-broken-bicycle/">一辆旧自行车</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/01/create-pages/">创建页面</a></li></ul>
+
+
+
+
+    <script>
+        
+    </script>
+</div>
+      <footer id="footer">
+    <div class="outer">
+        <div id="footer-info">
+		<div class="footer-center">
+            <a href="/about" target="_self">关于站长</a> | <a href="/resume" target="_self">个人简历</a> | <a href="/sitemap.xml" target="_blank">网站地图</a> | <a href="/atom.xml" target="_blank">订阅本站</a> | <script src="https://s95.cnzz.com/z_stat.php?id=1261281767&web_id=1261281767" language="JavaScript"></script>
+        </div>
+        <hr />
+            <div class="footer-left">
+                <i class="fa fa-copyright"></i>
+                版权所有 &copy; 2016-2017 <a href="https://opstrip.com" target="_blank">Jeff</a> 保留所有权利 <a href="http://www.miitbeian.gov.cn/" target="_blank"> 沪ICP备17008273号-1 </a>
+            </div>
+            <div class="footer-right">
+                网站框架<a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>，主题<a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.5">Yelee</a>，设计师<a href="http://moxfive.xyz/" target="_blank">MOxFIVE</a> <i class="fa fa-heart animated infinite pulse"></i>
+            </div>
+        </div>
+        
+            <div class="visit">
+                
+                    <span id="busuanzi_container_site_pv" style='display:none'>
+                        <span id="site-visit" title="本站到访数"><i class="fa fa-user" aria-hidden="true"></i><span id="busuanzi_value_site_uv"></span>
+                        </span>
+                    </span>
+                
+                
+                    <span>| </span>
+                
+                
+                    <span id="busuanzi_container_page_pv" style='display:none'>
+                        <span id="page-visit"  title="本页阅读量"><i class="fa fa-eye animated infinite pulse" aria-hidden="true"></i><span id="busuanzi_value_page_pv"></span>
+                        </span>
+                    </span>
+                
+            </div>
+        
+    </div>
+</footer>
+
+
+    </div>
+    
+<script data-main="/js/main.js" src="//cdn.bootcss.com/require.js/2.2.0/require.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var iPad = window.navigator.userAgent.indexOf('iPad');
+            if (iPad > -1 || $(".left-col").css("display") === "none") {
+                var bgColorList = ["#9db3f4", "#414141", "#e5a859", "#f5dfc6", "#c084a0", "#847e72", "#cd8390", "#996731"];
+                var bgColor = Math.ceil(Math.random() * (bgColorList.length - 1));
+                $("body").css({"background-color": bgColorList[bgColor], "background-size": "cover"});
+            }
+            else {
+                var backgroundnum = 5;
+                var backgroundimg = "url(/background/bg-x.jpg)".replace(/x/gi, Math.ceil(Math.random() * backgroundnum));
+                $("body").css({"background": backgroundimg, "background-attachment": "fixed", "background-size": "cover"});
+            }
+        })
+    </script>
+
+
+
+<!-- Google Analytics -->
+<script type="text/javascript">
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+ga('create', 'UA-90448941-1', 'auto');
+ga('send', 'pageview');
+
+</script>
+<!-- End Google Analytics -->
+
+
+
+<div class="scroll" id="scroll">
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" onclick="load$hide();" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
+</div>
+<script>
+    // Open in New Window
+    
+        var oOpenInNew = {
+            
+            
+            
+            
+            
+            
+             archives: ".archive-article-title", 
+             miniArchives: "a.post-list-link", 
+            
+             friends: "#js-friends a", 
+             socail: ".social a" 
+        }
+        for (var x in oOpenInNew) {
+            $(oOpenInNew[x]).attr("target", "_blank");
+        }
+    
+</script>
+
+<script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+  </div>
+</body>
+</html>
